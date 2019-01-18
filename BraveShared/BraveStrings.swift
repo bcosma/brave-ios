@@ -483,4 +483,8 @@ public extension Strings {
     public static let DDG_callout_no = NSLocalizedString("DDGCalloutNo", tableName: "BraveShared", bundle: Bundle.braveShared, value: "No", comment: "DuckDuckGo callout no action.")
     public static let DDG_callout_enable = NSLocalizedString("DDGCalloutEnable", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Yes", comment: "DuckDuckGo callout enable action.")
     public static let DDG_promotion = NSLocalizedString("LearnAboutPrivateSearchrwithDuckDuckGo", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Learn about private search \nwith DuckDuckGo", comment: "DuckDuckGo promotion label.")
+    public static let OpenExternalAppURLTitle = NSLocalizedString("ExternalAppURLAlertTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Allow link to switch apps?", comment: "Allow link to switch apps?")
+    public static let OpenExternalAppURLMessage = NSLocalizedString("ExternalAppURLAlertMessage", tableName: "BraveShared", bundle: Bundle.braveShared, value: "%@ will launch an external application", comment: "%@ will launch an external application")
+    public static let OpenExternalAppURLAllow = NSLocalizedString("ExternalAppURLAllow", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Allow", comment: "Allow Brave to open the external app URL")
+    public static let OpenExternalAppURLDontAllow = NSLocalizedString("ExternalAppURLDontAllow", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Don't Allow", comment: "Don't allow Brave to open the external app URL")
 }
