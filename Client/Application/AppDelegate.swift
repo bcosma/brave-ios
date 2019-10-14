@@ -61,10 +61,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         self.window!.backgroundColor = UIColor.Photon.White100
 
         AdBlockStats.shared.startLoading()
-        
         HttpsEverywhereStats.shared.startLoading()
         
         updateShortcutItems(application)
+        
+        // Must happen before passcode check, otherwise may unnecessarily reset keychain
+        Migration.moveDatabaseToApplicationDirectory()
         
         // Passcode checking, must happen on immediate launch
         if !DataController.shared.storeExists() {
@@ -128,7 +130,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
 
         self.tabManager = TabManager(prefs: profile.prefs, imageStore: imageStore)
-        self.tabManager.stateDelegate = self
 
         // Make sure current private browsing flag respects the private browsing only user preference
         PrivateBrowsingManager.shared.isPrivateBrowsing = Preferences.Privacy.privateBrowsingOnly.value
@@ -209,6 +210,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Override point for customization after application launch.
         var shouldPerformAdditionalDelegateHandling = true
 
+        // BVC generally handles theme applying, but in some instances views are established
+        // before then (e.g. passcode, so can be privacy concern, meaning this should be called ASAP)
+        // In order to properly apply background and align this with the rest of the UI (keyboard / header)
+        // this needs to be called. UI could be handled internally to view systems,
+        // but then keyboard may misalign with Brave selected theme override
+        Theme.of(nil).applyAppearanceProperties()
+        
         UIScrollView.doBadSwizzleStuff()
 
         #if BUDDYBUILD
@@ -240,7 +248,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         AutocompleteTextField.appearance().semanticContentAttribute = .forceLeftToRight
         
         let isFirstLaunch = Preferences.General.isFirstLaunch.value
+        if Preferences.General.basicOnboardingCompleted.value == OnboardingState.undetermined.rawValue {
+            Preferences.General.basicOnboardingCompleted.value =
+                isFirstLaunch ? OnboardingState.unseen.rawValue : OnboardingState.completed.rawValue
+        }
         Preferences.General.isFirstLaunch.value = false
+        Preferences.Review.launchCount.value += 1
         
         if isFirstLaunch {
             FavoritesHelper.addDefaultFavorites()
@@ -261,13 +274,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
         
         AdblockResourceDownloader.shared.startLoading()
-
-        UINavigationBar.appearance().tintColor = BraveUX.BraveOrange
-      
-        (UISwitch.appearance() as UISwitch).do {
-            $0.tintColor = BraveUX.SwitchTintColor
-            $0.onTintColor = BraveUX.BraveOrange
-        }
       
         return shouldPerformAdditionalDelegateHandling
     }
@@ -278,6 +284,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
         self.browserViewController.handleNavigationPath(path: routerpath)
         return true
+    }
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        if let presentedViewController = rootViewController.presentedViewController {
+            return presentedViewController.supportedInterfaceOrientations
+        } else {
+            return rootViewController.supportedInterfaceOrientations
+        }
     }
 
     // We sync in the foreground only, to avoid the possibility of runaway resource usage.
@@ -294,10 +308,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         if let profile = self.profile {
             profile.reopen()
         }
-
-        // We could load these here, but then we have to futz with the tab counter
-        // and making NSURLRequests.
-        self.browserViewController.loadQueuedTabs(receivedURLs: self.receivedURLs)
+        
         self.receivedURLs = nil
         application.applicationIconBadgeNumber = 0
 
@@ -411,6 +422,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Set the UA for WKWebView (via defaults), the favicon fetcher, and the image loader.
         // This only needs to be done once per runtime. Note that we use defaults here that are
         // readable from extensions, so they can just use the cached identifier.
+        
         let defaults = UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!
         defaults.register(defaults: ["UserAgent": firefoxUA])
 
@@ -497,20 +509,6 @@ extension AppDelegate: UINavigationControllerDelegate {
             return TrayToBrowserAnimator()
         default:
             return nil
-        }
-    }
-}
-
-extension AppDelegate: TabManagerStateDelegate {
-    func tabManagerWillStoreTabs(_ tabs: [Tab]) {
-        // It is possible that not all tabs have loaded yet, so we filter out tabs with a nil URL.
-        let storedTabs: [RemoteTab] = tabs.compactMap( Tab.toTab )
-
-        // Don't insert into the DB immediately. We tend to contend with more important
-        // work like querying for top sites.
-        let queue = DispatchQueue.global(qos: DispatchQoS.background.qosClass)
-        queue.asyncAfter(deadline: DispatchTime.now() + Double(Int64(ProfileRemoteTabsSyncDelay * Double(NSEC_PER_MSEC))) / Double(NSEC_PER_SEC)) {
-            self.profile?.storeTabs(storedTabs)
         }
     }
 }

@@ -9,6 +9,7 @@ import Data
 import BraveShared
 
 private let log = Logger.browserLogger
+private let rewardsLog = Logger.rewardsLogger
 
 extension WKNavigationAction {
     /// Allow local requests only if the request is privileged.
@@ -18,14 +19,6 @@ extension WKNavigationAction {
         }
 
         return !url.isWebPage(includeDataURIs: false) || !url.isLocal || request.isPrivileged
-    }
-}
-
-extension URL {
-    /// Obtain a schemeless absolute string
-    fileprivate var schemelessAbsoluteString: String {
-        guard let scheme = self.scheme else { return absoluteString }
-        return absoluteString.replacingOccurrences(of: "\(scheme)://", with: "")
     }
 }
 
@@ -209,7 +202,11 @@ extension BrowserViewController: WKNavigationDelegate {
                     webView.configuration.userContentController.remove(rule)
                 }
             }
-            
+            // Reset the block alert bool on new host. 
+            if let newHost: String = url.host, let oldHost: String = webView.url?.host, newHost != oldHost {
+                self.tabManager.selectedTab?.alertShownCount = 0
+                self.tabManager.selectedTab?.blockAllAlerts = false
+            }
             decisionHandler(.allow)
             return
         }
@@ -230,11 +227,27 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         let response = navigationResponse.response
         let responseURL = response.url
-
+        
+        if let tab = tabManager[webView] {
+            if let httpResponse = response as? HTTPURLResponse,
+                let cacheControl = httpResponse.allHeaderFields["Cache-Control"] as? String,
+                cacheControl.contains("no-store") {
+                tab.shouldClassifyLoadsForAds = false
+            }
+            if responseURL?.isSessionRestoreURL == true {
+                tab.shouldClassifyLoadsForAds = false
+            }
+        }
+        
         var request: URLRequest?
         if let url = responseURL {
             request = pendingRequests.removeValue(forKey: url.absoluteString)
         }
+        
+        // We can only show this content in the web view if this web view is not pending
+        // download via the context menu.
+        let canShowInWebView = navigationResponse.canShowMIMEType && (webView != pendingDownloadWebView)
+        let forceDownload = webView == pendingDownloadWebView
         
         if let url = responseURL, let urlHost = responseURL?.normalizedHost {
             // If an upgraded https load happens with a host which was upgraded, increase the stats
@@ -245,11 +258,6 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
             }
         }
-
-        // We can only show this content in the web view if this URL is not pending
-        // download via the context menu.
-        let canShowInWebView = navigationResponse.canShowMIMEType && (responseURL != pendingDownloadURL)
-        let forceDownload = responseURL == pendingDownloadURL
 
         // Check if this response should be handed off to Passbook.
         if let passbookHelper = OpenPassBookHelper(request: request, response: response, canShowInWebView: canShowInWebView, forceDownload: forceDownload, browserViewController: self) {
@@ -262,9 +270,24 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
         
+        // Check if this response should be downloaded.
+        if let downloadHelper = DownloadHelper(request: request, response: response, canShowInWebView: canShowInWebView, forceDownload: forceDownload, browserViewController: self) {
+            // Clear the network activity indicator since our helper is handling the request.
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            
+            // Clear the pending download web view so that subsequent navigations from the same
+            // web view don't invoke another download.
+            pendingDownloadWebView = nil
+            
+            // Open our helper and cancel this response from the webview.
+            downloadHelper.open()
+            decisionHandler(.cancel)
+            return
+        }
+        
         // If the content type is not HTML, create a temporary document so it can be downloaded and
         // shared to external applications later. Otherwise, clear the old temporary document.
-        if let tab = tabManager[webView] {
+        if let tab = tabManager[webView], navigationResponse.isForMainFrame {
             if response.mimeType?.isKindOfHTML == false, let request = request {
                 tab.temporaryDocument = TemporaryDocument(preflightResponse: response, request: request, tab: tab)
             } else {
@@ -275,6 +298,15 @@ extension BrowserViewController: WKNavigationDelegate {
         // If none of our helpers are responsible for handling this response,
         // just let the webview handle it as normal.
         decisionHandler(.allow)
+    }
+    
+    @available(iOS 13.0, *)
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, preferences: WKWebpagePreferences, decisionHandler: @escaping (WKNavigationActionPolicy, WKWebpagePreferences) -> Void) {
+        
+        self.webView(webView, decidePolicyFor: navigationAction) {
+            preferences.preferredContentMode = Preferences.General.alwaysRequestDesktopSite.value ? .desktop : .mobile
+            decisionHandler($0, preferences)
+        }
     }
 
     func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
@@ -322,15 +354,23 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.url = webView.url
         self.scrollController.resetZoomState()
 
+        rewards?.reportTabNavigation(tabId: tab.rewardsId)
+        
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
         }
     }
-
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let tab = tabManager[webView] {
             navigateInTab(tab: tab, to: navigation)
-            tab.reportPageLoad()
+            if let rewards = rewards {
+                tab.reportPageLoad(to: rewards)
+            }
+            if webView.url?.isLocal == false {
+                // Reset should classify
+                tab.shouldClassifyLoadsForAds = true
+            }
             
             if tab === tabManager.selectedTab {
                 topToolbar.updateProgressBar(1.0)

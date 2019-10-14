@@ -54,7 +54,7 @@ if [ ! -z "$XCS_BOT_ID"  ]; then
   CARTHAGE_VERBOSE="--verbose"
 fi
 
-SWIFT_VERSION=4.2 carthage bootstrap $CARTHAGE_VERBOSE --platform ios --color auto --cache-builds --no-use-binaries
+SWIFT_VERSION=5.0 carthage bootstrap $CARTHAGE_VERBOSE --platform ios --color auto --cache-builds --no-use-binaries
 
 # Install Node.js dependencies and build user scripts
 
@@ -67,8 +67,6 @@ fi
 npm run build
 echo "${COLOR_ORANGE}Building sync${COLOR_NONE}"
 npm run build:sync
-echo "Building adblock library"
-npm run build:adblock
 
 # Sets up local configurations from the tracked .template files
 
