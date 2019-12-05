@@ -4,7 +4,6 @@
 
 import Storage
 import Shared
-import Alamofire
 import XCGLogger
 import Deferred
 import SDWebImage
@@ -34,7 +33,8 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         return #imageLiteral(resourceName: "defaultFavicon")
     }()
 
-    static var colors: [String: UIColor] = [:] //An in-Memory data store that stores background colors domains. Stored using url.baseDomain.
+    // An in-Memory data store that stores background colors domains. Stored using url.baseDomain.
+    static var colors: [String: UIColor] = ["brave.com": UIColor.Photon.White100]
 
     // Sites can be accessed via their baseDomain.
     static var defaultIcons: [String: (color: UIColor, url: String)] = {
@@ -99,30 +99,29 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         return deferred
     }
 
-    lazy fileprivate var alamofire: Session = {
+    lazy fileprivate var session: URLSession = {
         let configuration = URLSessionConfiguration.default
-        var defaultHeaders = Session.default.session.configuration.httpAdditionalHeaders ?? [:]
-        defaultHeaders["User-Agent"] = FaviconFetcher.userAgent
-        configuration.httpAdditionalHeaders = defaultHeaders
+        configuration.httpAdditionalHeaders = ["User-Agent": FaviconFetcher.userAgent]
         configuration.timeoutIntervalForRequest = 5
-        return Session(configuration: configuration)
+        return URLSession(configuration: configuration, delegate: nil, delegateQueue: .main)
     }()
 
     fileprivate func fetchDataForURL(_ url: URL) -> Deferred<Maybe<Data>> {
         let deferred = Deferred<Maybe<Data>>()
-        alamofire.request(url).response { response in
+        session.dataTask(with: url) { data, response, error in
             // Don't cancel requests just because our Manager is deallocated.
-            withExtendedLifetime(self.alamofire) {
-                if response.error == nil {
-                    if let data = response.data {
+            withExtendedLifetime(self.session) {
+                if error == nil {
+                    if let data = data {
                         deferred.fill(Maybe(success: data))
                         return
                     }
                 }
-                let errorDescription = (response.error as NSError?)?.description ?? "No content."
+                
+                let errorDescription = (error as NSError?)?.description ?? "No content."
                 deferred.fill(Maybe(failure: FaviconFetcherErrorType(description: errorDescription)))
             }
-        }
+        }.resume()
         return deferred
     }
 

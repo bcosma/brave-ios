@@ -10,7 +10,7 @@ This branch (development)
 
 This branch is for mainline development that will ship in the next release.
 
-This branch currently supports iOS 12, and is written in Swift 4.
+This branch currently supports iOS 12, and is written in Swift 5.
 
 Please make sure you aim your pull requests in the right direction.
 
@@ -29,7 +29,7 @@ Want to contribute but don't know where to start? Here is a list of [Good First 
 Building the code
 -----------------
 
-1. Install the latest [Xcode developer tools](https://developer.apple.com/xcode/downloads/) from Apple. (Xcode 10 and up required)
+1. Install the latest [Xcode developer tools](https://developer.apple.com/xcode/downloads/) from Apple. (Xcode 11 and up required).
 1. Make sure `npm` is installed, `node` version 12 is recommended
 1. Install Carthage:
     ```shell
@@ -51,6 +51,11 @@ Building the code
     ```
 1. Open `Client.xcodeproj` in Xcode.
 1. Build the `Fennec` scheme in Xcode.
+
+Updating Rewards
+----------------
+
+Some Brave Rewards code is precompiled into a framework in the `BraveRewards` directory. It's code can be found in [brave-core](https://github.com/brave/brave-core/tree/master/vendor/brave-ios), and instructions on building and updating this code can be found [here](https://github.com/brave/brave-ios/blob/master/BraveRewards/Updating%20the%20BraveRewards%20framework.md)
 
 ## Contributor guidelines
 

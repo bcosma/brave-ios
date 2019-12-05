@@ -13,16 +13,26 @@ extension OnboardingShieldsViewController {
         /// A negative spacing is needed to make rounded corners for details view visible.
         static let negativeSpacing: CGFloat = -16
         static let descriptionContentInset: CGFloat = 32
+        static let animationContentInset: CGFloat = 50.0
     }
     
     class View: UIView {
         
-        let finishButton = CommonViews.primaryButton(text: Strings.OBFinishButton).then {
+        #if NO_REWARDS
+        let continueButton = CommonViews.primaryButton(text: Strings.OBFinishButton).then {
             $0.accessibilityIdentifier = "OnboardingShieldsViewController.FinishButton"
+            $0.titleLabel?.minimumScaleFactor = 0.75
         }
+        #else
+        let continueButton = CommonViews.primaryButton(text: Strings.OBContinueButton).then {
+            $0.accessibilityIdentifier = "OnboardingShieldsViewController.ContinueButton"
+            $0.titleLabel?.minimumScaleFactor = 0.75
+        }
+        #endif
         
         let skipButton = CommonViews.secondaryButton().then {
             $0.accessibilityIdentifier = "OnboardingShieldsViewController.SkipButton"
+            $0.titleLabel?.minimumScaleFactor = 0.75
         }
         
         private let mainStackView = UIStackView().then {
@@ -32,7 +42,6 @@ extension OnboardingShieldsViewController {
         
         let imageView = AnimationView(name: "onboarding-shields").then {
             $0.contentMode = .scaleAspectFit
-            $0.backgroundColor = #colorLiteral(red: 0.1176470588, green: 0.1254901961, blue: 0.1607843137, alpha: 1)
             $0.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
             $0.play()
             $0.loopMode = .loop
@@ -51,6 +60,8 @@ extension OnboardingShieldsViewController {
         private let textStackView = UIStackView().then { stackView in
             stackView.axis = .vertical
             stackView.spacing = 8
+            stackView.layoutMargins = UIEdgeInsets(top: 0.0, left: 20.0, bottom: 0.0, right: 20.0)
+            stackView.isLayoutMarginsRelativeArrangement = true
             
             let titleLabel = CommonViews.primaryText(Strings.OBShieldsTitle)
             
@@ -64,41 +75,61 @@ extension OnboardingShieldsViewController {
         }
         
         private let buttonsStackView = UIStackView().then {
-            $0.distribution = .equalCentering
+            $0.axis = .horizontal
+            $0.alignment = .center
+            $0.spacing = 15.0
         }
         
-        override var backgroundColor: UIColor? {
-            didSet {
-                // Needed to support rounding
-                descriptionView.backgroundColor = backgroundColor
-            }
-        }
-        
-        init() {
+        init(theme: Theme) {
             super.init(frame: .zero)
             
-            [imageView, descriptionView].forEach(mainStackView.addArrangedSubview(_:))
+            applyTheme(theme)
+            mainStackView.tag = OnboardingViewAnimationID.details.rawValue
+            descriptionStackView.tag = OnboardingViewAnimationID.detailsContent.rawValue
+            imageView.tag = OnboardingViewAnimationID.background.rawValue
             
-            [UIView.spacer(.horizontal, amount: 0),
-             finishButton,
-             UIView.spacer(.horizontal, amount: 0)]
+            addSubview(imageView)
+            addSubview(mainStackView)
+            mainStackView.snp.makeConstraints {
+                $0.leading.trailing.bottom.equalToSuperview()
+            }
+            
+            descriptionView.addSubview(descriptionStackView)
+            descriptionStackView.snp.makeConstraints {
+                $0.edges.equalTo(descriptionView.safeArea.edges).inset(UX.descriptionContentInset)
+            }
+            
+            mainStackView.addArrangedSubview(descriptionView)
+            
+            [skipButton, continueButton]
                 .forEach(buttonsStackView.addArrangedSubview(_:))
             
             [textStackView, buttonsStackView].forEach(descriptionStackView.addArrangedSubview(_:))
             
-            addSubview(mainStackView)
-            descriptionView.addSubview(descriptionStackView)
-            
-            mainStackView.snp.makeConstraints {
-                $0.leading.equalTo(self.safeArea.leading)
-                $0.trailing.equalTo(self.safeArea.trailing)
-                $0.bottom.equalTo(self.safeArea.bottom)
-                $0.top.equalTo(self) // extend the view undeneath the safe area/notch
+            skipButton.snp.makeConstraints {
+                $0.width.equalTo(continueButton.snp.width).priority(.low)
             }
+        }
+        
+        func applyTheme(_ theme: Theme) {
+            descriptionView.backgroundColor = OnboardingViewController.colorForTheme(theme)
+            textStackView.arrangedSubviews.forEach({
+                if let label = $0 as? UILabel {
+                    label.appearanceTextColor = theme.colors.tints.home
+                }
+            })
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
             
-            descriptionStackView.snp.makeConstraints {
-                $0.edges.equalToSuperview().inset(UX.descriptionContentInset)
-            }
+            let size = imageView.intrinsicContentSize
+            let scaleFactor = bounds.width / size.width
+            let newSize = CGSize(width: size.width * scaleFactor, height: size.height * scaleFactor)
+            
+            // Design wants LESS offset on iPhone 8 than on iPhone X
+            let offset = self.safeAreaInsets.top > 30 ? 0 : -UX.animationContentInset
+            imageView.frame = CGRect(x: 0.0, y: UX.animationContentInset + offset, width: newSize.width, height: newSize.height)
         }
         
         @available(*, unavailable)

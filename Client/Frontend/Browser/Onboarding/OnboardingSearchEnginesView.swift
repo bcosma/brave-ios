@@ -11,9 +11,9 @@ import SnapKit
 extension OnboardingSearchEnginesViewController {
     
     private struct UX {
-        static let topInset: CGFloat = 48
+        static var topInset: CGFloat = 48
         static let contentInset: CGFloat = 25
-        static let logoSizeAfterAnimation: CGFloat = 100
+        static var logoSizeAfterAnimation: CGFloat = 100
         static let logoSizeBeforeAnimation: CGFloat = 150
         
         struct SearchEngineCell {
@@ -29,15 +29,17 @@ extension OnboardingSearchEnginesViewController {
             $0.separatorStyle = .none
             $0.allowsMultipleSelection = false
             $0.alwaysBounceVertical = false
+            $0.showsVerticalScrollIndicator = true
         }
         
         let continueButton = CommonViews.primaryButton(text: Strings.OBSaveButton).then {
             $0.accessibilityIdentifier = "OnboardingSearchEnginesViewController.SaveButton"
-            $0.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+            $0.titleLabel?.minimumScaleFactor = 0.75
         }
         
         let skipButton = CommonViews.secondaryButton().then {
             $0.accessibilityIdentifier = "OnboardingSearchEnginesViewController.SkipButton"
+            $0.titleLabel?.minimumScaleFactor = 0.75
         }
         
         private let mainStackView = UIStackView().then {
@@ -65,28 +67,38 @@ extension OnboardingSearchEnginesViewController {
         }
         
         private let buttonsStackView = UIStackView().then {
-            $0.distribution = .equalCentering
+            $0.axis = .horizontal
             $0.alignment = .center
+            $0.spacing = 15.0
         }
+        
+        private let containerView = UIView()
         
         private var logoCenterY: Constraint?
         
-        init() {
+        init(theme: Theme) {
             super.init(frame: .zero)
             
-            addSubview(braveLogo)
+            applyTheme(theme)
+            containerView.tag = OnboardingViewAnimationID.details.rawValue
+            mainStackView.tag = OnboardingViewAnimationID.detailsContent.rawValue
+            braveLogo.tag = OnboardingViewAnimationID.background.rawValue
             
+            addSubview(containerView)
+            containerView.snp.makeConstraints {
+                $0.edges.equalToSuperview()
+            }
+            
+            containerView.addSubview(braveLogo)
             [titlePrimary, titleSecondary].forEach(titleStackView.addArrangedSubview(_:))
             
-            let spacer = UIView()
-            
-            [skipButton, continueButton, spacer]
+            [skipButton, continueButton]
                 .forEach(buttonsStackView.addArrangedSubview(_:))
             
             [titleStackView, searchEnginesTable, buttonsStackView]
                 .forEach(mainStackView.addArrangedSubview(_:))
             
-            addSubview(mainStackView)
+            containerView.addSubview(mainStackView)
             
             braveLogo.snp.makeConstraints {
                 $0.centerX.equalToSuperview()
@@ -96,14 +108,9 @@ extension OnboardingSearchEnginesViewController {
 
             mainStackView.snp.makeConstraints {
                 $0.top.equalTo(braveLogo.snp.bottom).offset(30)
-                $0.leading.equalTo(self.safeArea.leading).inset(UX.contentInset)
-                $0.trailing.equalTo(self.safeArea.trailing).inset(UX.contentInset)
-                $0.bottom.equalTo(self.safeArea.bottom).inset(UX.contentInset)
-            }
-            
-            // Make width the same as skip button to make save button always centered.
-            spacer.snp.makeConstraints {
-                $0.width.equalTo(skipButton)
+                $0.leading.equalTo(containerView.safeArea.leading).inset(UX.contentInset)
+                $0.trailing.equalTo(containerView.safeArea.trailing).inset(UX.contentInset)
+                $0.bottom.equalTo(containerView.safeArea.bottom).inset(UX.contentInset)
             }
             
             // Hiding views in prepration to animations.
@@ -112,13 +119,31 @@ extension OnboardingSearchEnginesViewController {
                 $0.alpha = CGFloat.leastNormalMagnitude
             }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                self?.startAnimations()
+            skipButton.snp.makeConstraints {
+                $0.width.equalTo(continueButton.snp.width).priority(.low)
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                if self.bounds.height < 660.0 {
+                    UX.topInset = 10.0
+                    UX.logoSizeAfterAnimation = 50.0
+                }
+                
+                print(UX.topInset)
+                self.startAnimations()
             }
         }
         
         @available(*, unavailable)
         required init(coder: NSCoder) { fatalError() }
+        
+        func applyTheme(_ theme: Theme) {
+            containerView.backgroundColor = OnboardingViewController.colorForTheme(theme)
+            searchEnginesTable.backgroundView?.backgroundColor = OnboardingViewController.colorForTheme(theme)
+            titlePrimary.appearanceTextColor = theme.colors.tints.home
+            titleSecondary.appearanceTextColor = theme.colors.tints.home
+            searchEnginesTable.reloadData()
+        }
         
         // MARK: - Animations
         

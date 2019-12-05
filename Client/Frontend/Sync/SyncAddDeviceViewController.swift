@@ -82,8 +82,8 @@ class SyncAddDeviceViewController: SyncViewController {
 
         view.addSubview(stackView)
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeArea.top)
-            make.left.right.equalTo(self.view)
+            make.top.equalTo(self.view.safeArea.top).inset(10)
+            make.left.right.equalTo(self.view).inset(16)
             make.bottom.equalTo(self.view.safeArea.bottom).inset(24)
         }
         
@@ -138,12 +138,17 @@ class SyncAddDeviceViewController: SyncViewController {
     func setupVisuals() {
         modeControl = UISegmentedControl(items: [Strings.QRCode, Strings.CodeWords])
         modeControl.translatesAutoresizingMaskIntoConstraints = false
-        modeControl.tintColor = BraveUX.BraveOrange
         modeControl.selectedSegmentIndex = 0
         modeControl.addTarget(self, action: #selector(SEL_changeMode), for: .valueChanged)
         modeControl.isHidden = deviceType == .computer
-        controlContainerView.addSubview(modeControl)
-        stackView.addArrangedSubview(controlContainerView)
+        modeControl.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        
+        if #available(iOS 13.0, *) {
+            modeControl.selectedSegmentTintColor = BraveUX.BraveOrange
+        } else {
+            modeControl.tintColor = BraveUX.BraveOrange
+        }
+        stackView.addArrangedSubview(modeControl)
         
         let titleDescriptionStackView = UIStackView()
         titleDescriptionStackView.axis = .vertical
@@ -153,6 +158,7 @@ class SyncAddDeviceViewController: SyncViewController {
         titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.semibold)
+        titleLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         titleDescriptionStackView.addArrangedSubview(titleLabel)
 
         descriptionLabel = UILabel()
@@ -162,35 +168,27 @@ class SyncAddDeviceViewController: SyncViewController {
         descriptionLabel.textAlignment = .center
         descriptionLabel.adjustsFontSizeToFitWidth = true
         descriptionLabel.minimumScaleFactor = 0.5
+        descriptionLabel.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
         titleDescriptionStackView.addArrangedSubview(descriptionLabel)
 
-        let textStackView = UIStackView(arrangedSubviews: [UIView.spacer(.horizontal, amount: 32),
-                                                           titleDescriptionStackView,
-                                                           UIView.spacer(.horizontal, amount: 32)])
-        textStackView.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 100), for: .vertical)
-
-        stackView.addArrangedSubview(textStackView)
+        stackView.addArrangedSubview(titleDescriptionStackView)
         
         codewordsView.isHidden = true
         containerView.addSubview(codewordsView)
-        
         stackView.addArrangedSubview(containerView)
         
-        let copyPasteStackView = UIStackView()
-        copyPasteStackView.axis = .vertical
-        copyPasteStackView.spacing = 1
-        copyPasteStackView.addArrangedSubview(copyPasteButton)
-        stackView.addArrangedSubview(copyPasteStackView)
-
         let doneEnterWordsStackView = UIStackView()
         doneEnterWordsStackView.axis = .vertical
         doneEnterWordsStackView.spacing = 4
+        doneEnterWordsStackView.distribution = .fillEqually
+        
+        doneEnterWordsStackView.addArrangedSubview(copyPasteButton)
 
         doneButton = RoundInterfaceButton(type: .roundedRect)
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         doneButton.setTitle(Strings.Done, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.bold)
-        doneButton.setTitleColor(UIColor.white, for: .normal)
+        doneButton.appearanceTextColor = .white
         doneButton.backgroundColor = BraveUX.BraveOrange
         doneButton.addTarget(self, action: #selector(SEL_done), for: .touchUpInside)
 
@@ -203,31 +201,12 @@ class SyncAddDeviceViewController: SyncViewController {
         enterWordsButton.setTitleColor(BraveUX.GreyH, for: .normal)
         enterWordsButton.addTarget(self, action: #selector(SEL_showCodewords), for: .touchUpInside)
 
-        let buttonsStackView = UIStackView(arrangedSubviews: [UIView.spacer(.horizontal, amount: 16),
-                                                              doneEnterWordsStackView,
-                                                              UIView.spacer(.horizontal, amount: 16)])
-        buttonsStackView.setContentCompressionResistancePriority(UILayoutPriority(rawValue: 1000), for: .vertical)
+        doneEnterWordsStackView.setContentCompressionResistancePriority(.required, for: .vertical)
 
-        stackView.addArrangedSubview(buttonsStackView)
-        
-        controlContainerView.snp.makeConstraints { (make) in
-            make.top.equalTo(0)
-            make.left.right.equalTo(self.view)
-            make.height.greaterThanOrEqualTo(44)
-        }
+        stackView.addArrangedSubview(doneEnterWordsStackView)
 
-        modeControl.snp.makeConstraints { (make) in
-            make.top.equalTo(0).offset(10)
-            make.left.right.equalTo(self.controlContainerView).inset(8)
-        }
-        
-        containerView.snp.makeConstraints { (make) in
-            make.left.right.equalTo(self.view).inset(22)
-        }
-
-        codewordsView.snp.makeConstraints { (make) in
-            make.top.bottom.equalTo(self.containerView).inset(8)
-            make.left.right.equalTo(self.containerView).inset(22)
+        codewordsView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
 
         doneButton.snp.makeConstraints { (make) in
@@ -251,17 +230,35 @@ class SyncAddDeviceViewController: SyncViewController {
         titleLabel.text = isFirstIndex ? Strings.SyncAddDeviceScan : Strings.SyncAddDeviceWords
         
         if isFirstIndex {
-            descriptionLabel.text = Strings.SyncAddDeviceScanDescription
+            let description = Strings.SyncAddDeviceScanDescription
+            let attributedDescription = NSMutableAttributedString(string: description)
+            
+            if let lastSentenceRange = lastSentenceRange(text: description) {
+                attributedDescription.addAttribute(.foregroundColor, value: BraveUX.Red, range: lastSentenceRange)
+            }
+            
+            descriptionLabel.attributedText = attributedDescription
         } else {
             // The button name should be the same as in codewords instructions.
             let buttonName = Strings.ScanSyncCode
             let addDeviceWords = String(format: Strings.SyncAddDeviceWordsDescription, buttonName)
+            let description = NSMutableAttributedString(string: addDeviceWords)
             let fontSize = descriptionLabel.font.pointSize
             
-            // For codewords instructions copy, we want to bold the button name which needs to be tapped.
-            descriptionLabel.attributedText =
-                addDeviceWords.makePartiallyBoldAttributedString(stringToBold: buttonName, boldTextSize: fontSize)
+            let boldRange = (addDeviceWords as NSString).range(of: buttonName)
+            description.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: fontSize), range: boldRange)
+            
+            if let lastSentenceRange = lastSentenceRange(text: addDeviceWords) {
+                description.addAttribute(.foregroundColor, value: BraveUX.Red, range: lastSentenceRange)
+            }
+            
+            descriptionLabel.attributedText = description
         }
+    }
+    
+    private func lastSentenceRange(text: String) -> NSRange? {
+        guard let lastSentence = text.split(separator: "\n").last else { return nil }
+        return (text as NSString).range(of: String(lastSentence))
     }
     
     @objc func SEL_showCodewords() {

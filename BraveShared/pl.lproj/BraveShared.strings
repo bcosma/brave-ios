@@ -68,9 +68,6 @@
 "AuthenticationLoginsTouchReason" = "Użyj swojego odcisku palca, aby uzyskać dostęp do loginów.";
 
 /* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
-"AuthenticationMaximumAttemptsReached" = "Osiągnięto maksymalną liczbę prób. Spróbuj ponownie za godzinę.";
-
-/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
 "AuthenticationMaximumAttemptsReachedNoTime" = "Osiągnięto maksymalną liczbę prób. Spróbuj ponownie później.";
 
 /* Label for the Passcode item in Settings */
@@ -184,6 +181,9 @@
 /* Button to show the brave panel */
 "BravePanel" = "Panel Brave";
 
+/* Brave Rewards settings title */
+"BraveRewardsTitle" = "Brave Rewards";
+
 /* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
 "BraveShieldDefaults" = "Domyślne ustawienia Brave Shield";
 
@@ -277,6 +277,9 @@
 /* Copy codewords title */
 "CopyToClipboard" = "Skopiuj do schowka";
 
+/* Copy rewards internals info for support */
+"CopyWalletSupportInfo" = "Kopiuj informacje o wsparciu";
+
 /* Currently usedd search engines section name. */
 "CurrentlyUsedSearchEngines" = "Obecnie wykorzystywane wyszukiwarki";
 
@@ -321,6 +324,9 @@
 
 /* Current device model and iOS version copied to clipboard. */
 "DeviceTemplate" = "Urządzenie %1$@ (%2$@)";
+
+/* Section name for display preferences. */
+"DisplaySettingsSection" = "Wyświetl";
 
 /* No comment provided by engineer. */
 "Done" = "Gotowe";
@@ -433,6 +439,15 @@
 /* Grand camera access */
 "GrantCameraAccess" = "Włącz aparat";
 
+/* Context menu item for hiding link previews */
+"HideLinkPreviewsActionTitle" = "Ukrywaj podglądy linków";
+
+/* Hides the rewards icon */
+"HideRewardsIcon" = "Ukryj ikonę Brave Rewards";
+
+/* Hide the rewards icon explination. */
+"HideRewardsIconSubtitle" = "Ukrywa ikonę Brave Rewards, gdy Brave Rewards nie jest włączone.";
+
 /* Title for history menu item */
 "HistortMenuItem" = "Historia";
 
@@ -486,6 +501,9 @@
 
 /* Label for the button used to select all logins. */
 "LoginListSelectAllButtonTitle" = "Wybierz wszystko";
+
+/* Setting to allow media to play automatically */
+"MediaAutoPlays" = "Włącz autoodtwarzanie wideo w tle";
 
 /* Copy password text selection menu item */
 "MenuItemCopyTitle" = "Kopiuj";
@@ -585,6 +603,9 @@
 
 /* Setting to keep app in private mode */
 "PrivateBrowsingOnly" = "Przeglądanie wyłącznie w trybie prywatnym";
+
+/* When 'Private Browsing Only' is enabled, we need to alert the user of their normal tabs being destroyed */
+"PrivateBrowsingOnlyWarning" = "Tryb przeglądania wyłącznie w trybie prywatnym zamknie wszystkie bieżące karty i wyloguje Cię ze wszystkich stron.";
 
 /* Private tab details */
 "PrivateTabBody" = "Karty w trybie prywatnym nie są zapisywane w przeglądarce Brave, ale nie czyni to Ciebie anonimowym użytkownikiem sieci. Strony odwiedzane w trybie prywatnym nie będą wyświetlane w historii, a pliki cookie zostaną usunięte po zamknięciu stron — w przeglądarce Brave nie pozostanie po nich żaden ślad, ale zapisane pliki nie zostaną usunięte.\nTwój operator (lub właściciel użytkowanych przez Ciebie sieci Wi-Fi lub VPN) może zobaczyć odwiedzane przez Ciebie witryny, a na tych witrynach będzie znany Twój publiczny adres IP, nawet podczas korzystania z kart w trybie prywatnym.";
@@ -763,6 +784,9 @@
 /* Error message that is shown in settings when there was a problem loading */
 "SettingsContentLoadErrorMessage" = "Nie można załadować strony.";
 
+/* Row name for licenses. */
+"SettingsLicenses" = "Licencje";
+
 /* Title for settings menu item */
 "SettingsMenuItem" = "Ustawienia";
 
@@ -814,6 +838,9 @@
 /* Setting preference to only show the browser tabs bar when the device is in the landscape orientation. */
 "ShowInLandscapeOnly" = "Pokaż tylko w orientacji poziomej";
 
+/* Context menu item for showing link previews */
+"ShowLinkPreviewsActionTitle" = "Pokaż podglądy linków";
+
 /* Accessibility Label for the tabs button in the browser toolbar */
 "ShowTabs" = "Pokaż karty";
 
@@ -845,7 +872,7 @@
 "SyncAddComputerTitle" = "Dodaj komputer";
 
 /* Add mobile device to sync with scan */
-"SyncAddDeviceScan" = "Skanuj kod QR łańcucha";
+"SyncAddDeviceScan" = "Synchronizuj kod QR łańcucha";
 
 /* Sync add device description */
 "SyncAddDeviceScanDescription" = "Na drugim urządzeniu mobilnym przejdź do obszaru Synchronizacja w panelu Ustawienia i dotknij przycisku „Skanuj kod synchronizacji”. Skorzystaj z aparatu, aby zeskanować poniższy kod QR.\n Traktuj ten kod jak hasło. Jeśli ktoś go pozna, będzie mógł odczytać i zmodyfikować synchronizowane dane.";
@@ -1031,7 +1058,7 @@
 "ThemesDarkOption" = "Ciemny";
 
 /* Setting to choose the user interface theme for normal browsing mode, contains choices like 'light' or 'dark' themes */
-"ThemesDisplayBrightness" = "Wyświetlanie i jasność";
+"ThemesDisplayBrightness" = "Wygląd";
 
 /* Text specifying that the above setting does not impact the user interface while they user is in private browsing mode. */
 "ThemesDisplayBrightnessFooter" = "Ustawienia te nie są stosowane w trybie przeglądania prywatnego.";
@@ -1062,6 +1089,9 @@
 
 /* Version number of Brave shown in settings */
 "VersionTemplate" = "Wersja %1$@ (%2$@)";
+
+/* The date your wallet was created */
+"WalletCreationDate" = "Data utworzenia portfela";
 
 /* Accessibility label for the main web content view */
 "WebContentAccessibilityLabel" = "Treść strony";

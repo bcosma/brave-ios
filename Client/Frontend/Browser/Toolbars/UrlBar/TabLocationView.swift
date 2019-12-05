@@ -184,7 +184,6 @@ class TabLocationView: UIView {
     lazy var rewardsButton: RewardsButton = {
         let button = RewardsButton()
         button.addTarget(self, action: #selector(didClickBraveRewardsButton), for: .touchUpInside)
-        button.isDisabled = PrivateBrowsingManager.shared.isPrivateBrowsing
         return button
     }()
     
@@ -209,9 +208,7 @@ class TabLocationView: UIView {
         var optionSubviews = [readerModeButton, reloadButton, separatorLine, shieldsButton]
         separatorLine.isUserInteractionEnabled = false
         
-        #if !NO_REWARDS
         optionSubviews.append(rewardsButton)
-        #endif
         
         let buttonContentEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5)
         optionSubviews.forEach {
@@ -251,14 +248,6 @@ class TabLocationView: UIView {
         let dragInteraction = UIDragInteraction(delegate: self)
         dragInteraction.allowsSimultaneousRecognitionDuringLift = true
         self.addInteraction(dragInteraction)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(privateBrowsingModeChanged), name: Notification.Name.PrivacyModeChanged, object: nil)
-    }
-    
-    @objc private func privateBrowsingModeChanged() {
-        #if !NO_REWARDS
-        rewardsButton.isDisabled = PrivateBrowsingManager.shared.isPrivateBrowsing
-        #endif
     }
 
     required init(coder: NSCoder) {
@@ -322,7 +311,7 @@ class TabLocationView: UIView {
 
     fileprivate func updateTextWithURL() {
         (urlTextField as? DisplayTextField)?.hostString = url?.host ?? ""
-        urlTextField.text = url?.schemelessAbsoluteString.trim("/")
+        urlTextField.text = url?.withoutWWW.schemelessAbsoluteString.trim("/")
     }
 }
 

@@ -21,6 +21,24 @@ enum WriteContext {
 
 public class DataController: NSObject {
     private static let databaseName = "Brave.sqlite"
+    private static let modelName = "Model"
+    
+    // MARK: - Initialization
+    
+    /// Managed Object Model of the database stack.
+    /// Must be created only once, this is to prevent a bug when testing with in-memory store.
+    /// More info here https://stackoverflow.com/a/51857486.
+    /// Note: this might be not needed in Swift 5.1 or newer.
+    private static let model: NSManagedObjectModel = {
+        guard let modelURL = Bundle(for: DataController.self).url(forResource: modelName, withExtension: "momd") else {
+            fatalError("Error loading model from bundle")
+        }
+        guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
+            fatalError("Error initializing managed object model from: \(modelURL)")
+        }
+        
+        return mom
+    }()
     
     // MARK: - Public interface
     
@@ -208,15 +226,7 @@ public class DataController: NSObject {
     }
     
     private func createContainer(store: URL) -> NSPersistentContainer {
-        let modelName = "Model"
-        guard let modelURL = Bundle(for: DataController.self).url(forResource: modelName, withExtension: "momd") else {
-            fatalError("Error loading model from bundle for store: \(store.absoluteString)")
-        }
-        guard let mom = NSManagedObjectModel(contentsOf: modelURL) else {
-            fatalError("Error initializing managed object model from: \(modelURL)")
-        }
-        
-        let container = NSPersistentContainer(name: modelName, managedObjectModel: mom)
+        let container = NSPersistentContainer(name: DataController.modelName, managedObjectModel: DataController.model)
         
         addPersistentStore(for: container, store: store)
         
@@ -241,7 +251,7 @@ public class DataController: NSObject {
         return docURL.appendingPathComponent(DataController.databaseName)
     }
     
-    private static func newBackgroundContext() -> NSManagedObjectContext {
+    static func newBackgroundContext() -> NSManagedObjectContext {
         let backgroundContext = DataController.shared.container.newBackgroundContext()
         // In theory, the merge policy should not matter
         // since all operations happen on a synchronized operation queue.
@@ -250,7 +260,7 @@ public class DataController: NSObject {
         return backgroundContext
     }
     
-    private static func newBackgroundContextInMemory() -> NSManagedObjectContext {
+    static func newBackgroundContextInMemory() -> NSManagedObjectContext {
         let backgroundContext = DataController.sharedInMemory.container.newBackgroundContext()
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
         return backgroundContext

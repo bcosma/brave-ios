@@ -94,6 +94,7 @@ class TabManager: NSObject {
 
         Preferences.Shields.blockImages.observe(from: self)
         Preferences.General.blockPopups.observe(from: self)
+        Preferences.General.mediaAutoPlays.observe(from: self)
     }
 
     func addNavigationDelegate(_ delegate: WKNavigationDelegate) {
@@ -161,6 +162,11 @@ class TabManager: NSObject {
         let configuration = WKWebViewConfiguration()
         configuration.processPool = WKProcessPool()
         configuration.preferences.javaScriptCanOpenWindowsAutomatically = !Preferences.General.blockPopups.value
+        
+//        if !Preferences.General.mediaAutoPlays.value {
+//            configuration.mediaTypesRequiringUserActionForPlayback = .all
+//        }
+        
         UserReferralProgram.shared?.insertCookies(intoStore: configuration.websiteDataStore.httpCookieStore)
         return configuration
     }
@@ -246,8 +252,9 @@ class TabManager: NSObject {
         }
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate,
-            let rewards = appDelegate.browserViewController.rewards,
             let newSelectedTab = tab, let previousTab = previous, let newTabUrl = newSelectedTab.url, let previousTabUrl = previousTab.url else { return }
+        
+        let rewards = appDelegate.browserViewController.rewards
         
         if !PrivateBrowsingManager.shared.isPrivateBrowsing {
             let previousFaviconURL = URL(string: previousTab.displayFavicon?.url ?? "")
@@ -1100,6 +1107,9 @@ extension TabManager: PreferencesObserver {
             }
             // The default tab configurations also need to change.
             configuration.preferences.javaScriptCanOpenWindowsAutomatically = allowPopups
+        case Preferences.General.mediaAutoPlays.key:
+            reset()
+            reloadSelectedTab()
         default:
             break
         }

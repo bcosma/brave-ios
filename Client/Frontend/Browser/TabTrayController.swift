@@ -62,7 +62,7 @@ class TabCell: UICollectionViewCell, Themeable {
     var margin = CGFloat(0)
 
     override init(frame: CGRect) {
-        self.backgroundHolder.backgroundColor = UIColor.Photon.White100
+        self.backgroundHolder.backgroundColor = .white
         self.backgroundHolder.layer.cornerRadius = TabTrayControllerUX.CornerRadius
         self.backgroundHolder.clipsToBounds = true
 
@@ -194,7 +194,8 @@ class TabCell: UICollectionViewCell, Themeable {
     func applyTheme(_ theme: Theme) {
         styleChildren(theme: theme)
         
-        backgroundHolder.backgroundColor = theme.colors.home
+        // TabCell doesn't use much theming atm, using non-themable values for some views here.
+        titleText.appearanceTextColor = .black
         screenshotView.backgroundColor = backgroundHolder.backgroundColor
         favicon.tintColor = theme.colors.tints.home
     }
@@ -664,9 +665,9 @@ extension TabTrayController: TabManagerDelegate {
         // through the Close All Tabs feature (which will close tabs that are not in our current privacy mode)
         // check this before removing the item from the collection
         let removedIndex = tabDataSource.removeTab(tab)
-        if removedIndex > -1 {
-            self.collectionView.performBatchUpdates({
-                self.collectionView.deleteItems(at: [IndexPath(item: removedIndex, section: 0)])
+        if removedIndex > -1, let collectionView = self.collectionView {
+            collectionView.performBatchUpdates({
+                collectionView.deleteItems(at: [IndexPath(item: removedIndex, section: 0)])
             }, completion: { finished in
                 guard self.privateTabsAreEmpty() else { return }
                 self.emptyPrivateTabsView.isHidden = false

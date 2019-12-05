@@ -22,6 +22,29 @@ extension WKNavigationAction {
     }
 }
 
+extension URL {
+    /// Obtain a schemeless absolute string
+    fileprivate var schemelessAbsoluteString: String {
+        guard let scheme = self.scheme else { return absoluteString }
+        return absoluteString.replacingOccurrences(of: "\(scheme)://", with: "")
+    }
+}
+
+extension BrowserViewController {
+    fileprivate func handleExternalURL(_ url: URL, openedURLCompletionHandler: ((Bool) -> Void)? = nil) {
+        let alertController = UIAlertController(
+            title: Strings.OpenExternalAppURLTitle,
+            message: String(format: Strings.OpenExternalAppURLMessage, url.relativeString),
+            preferredStyle: .alert
+        )
+        alertController.addAction(UIAlertAction(title: Strings.OpenExternalAppURLDontAllow, style: .cancel))
+        alertController.addAction(UIAlertAction(title: Strings.OpenExternalAppURLAllow, style: .default) { result in
+            UIApplication.shared.open(url, options: [:], completionHandler: openedURLCompletionHandler)
+        })
+        self.present(alertController, animated: true)
+    }
+}
+
 extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         if tabManager.selectedTab?.webView !== webView {
@@ -62,6 +85,9 @@ extension BrowserViewController: WKNavigationDelegate {
                 return true
             }
         }
+        if url.scheme == "itms-appss" || url.scheme == "itmss" {
+            return true
+        }
         return false
     }
 
@@ -88,6 +114,15 @@ extension BrowserViewController: WKNavigationDelegate {
             decisionHandler(.allow)
             return
         }
+        
+        if url.isBookmarklet && navigationAction.isAllowed {
+            decisionHandler(.cancel)
+            
+            if let code = url.bookmarkletCodeComponent {
+                webView.evaluateJavaScript(code)
+            }
+            return
+        }
 
         if !navigationAction.isAllowed && navigationAction.navigationType != .backForward {
             log.warning("Denying unprivileged request: \(navigationAction.request)")
@@ -104,7 +139,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // First special case are some schemes that are about Calling. We prompt the user to confirm this action. This
         // gives us the exact same behaviour as Safari.
         if url.scheme == "tel" || url.scheme == "facetime" || url.scheme == "facetime-audio" {
-            UIApplication.shared.open(url, options: [:])
+            handleExternalURL(url)
             decisionHandler(.cancel)
             return
         }
@@ -114,25 +149,20 @@ extension BrowserViewController: WKNavigationDelegate {
         // iOS will always say yes. TODO Is this the same as isWhitelisted?
 
         if isAppleMapsURL(url) {
-            UIApplication.shared.open(url, options: [:])
+            handleExternalURL(url)
             decisionHandler(.cancel)
             return
         }
 
-        if let tab = tabManager.selectedTab, isStoreURL(url) {
+        if isStoreURL(url) {
+            handleExternalURL(url)
             decisionHandler(.cancel)
-
-            let alreadyShowingSnackbarOnThisTab = tab.bars.count > 0
-            if !alreadyShowingSnackbarOnThisTab {
-                TimerSnackBar.showAppStoreConfirmationBar(forTab: tab, appStoreURL: url)
-            }
-
             return
         }
 
         // Handles custom mailto URL schemes.
         if url.scheme == "mailto" {
-            UIApplication.shared.open(url, options: [:])
+            handleExternalURL(url)
             decisionHandler(.cancel)
             return
         }
@@ -149,7 +179,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
             pendingRequests[url.absoluteString] = navigationAction.request
             
-            if let urlHost = url.normalizedHost {
+            if let urlHost = url.normalizedHost() {
                 if let mainDocumentURL = navigationAction.request.mainDocumentURL, url.scheme == "http" {
                     let domainForShields = Domain.getOrCreate(forUrl: mainDocumentURL, persistent: !isPrivateBrowsing)
                     if domainForShields.isShieldExpected(.HTTPSE) && HttpsEverywhereStats.shared.shouldUpgrade(url) {
@@ -213,8 +243,8 @@ extension BrowserViewController: WKNavigationDelegate {
 
         // Ignore JS navigated links, the intention is to match Safari and native WKWebView behaviour.
         if navigationAction.navigationType == .linkActivated {
-            UIApplication.shared.open(url, options: [:]) { openedURL in
-                if !openedURL {
+            handleExternalURL(url) { didOpenURL in
+                if !didOpenURL {
                     let alert = UIAlertController(title: Strings.UnableToOpenURLErrorTitle, message: Strings.UnableToOpenURLError, preferredStyle: .alert)
                     alert.addAction(UIAlertAction(title: Strings.OKString, style: .default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
@@ -249,7 +279,7 @@ extension BrowserViewController: WKNavigationDelegate {
         let canShowInWebView = navigationResponse.canShowMIMEType && (webView != pendingDownloadWebView)
         let forceDownload = webView == pendingDownloadWebView
         
-        if let url = responseURL, let urlHost = responseURL?.normalizedHost {
+        if let url = responseURL, let urlHost = responseURL?.normalizedHost() {
             // If an upgraded https load happens with a host which was upgraded, increase the stats
             if url.scheme == "https", let _ = pendingHTTPUpgrades.removeValue(forKey: urlHost) {
                 BraveGlobalShieldStats.shared.httpse += 1
@@ -354,7 +384,7 @@ extension BrowserViewController: WKNavigationDelegate {
         tab.url = webView.url
         self.scrollController.resetZoomState()
 
-        rewards?.reportTabNavigation(tabId: tab.rewardsId)
+        rewards.reportTabNavigation(tabId: tab.rewardsId)
         
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
@@ -364,12 +394,22 @@ extension BrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if let tab = tabManager[webView] {
             navigateInTab(tab: tab, to: navigation)
-            if let rewards = rewards {
-                tab.reportPageLoad(to: rewards)
+            if let url = tab.url, tab.shouldClassifyLoadsForAds {
+                let faviconURL = URL(string: tab.displayFavicon?.url ?? "")
+                rewards.reportTabUpdated(
+                    Int(tab.rewardsId),
+                    url: url,
+                    faviconURL: faviconURL,
+                    isSelected: tabManager.selectedTab == tab,
+                    isPrivate: PrivateBrowsingManager.shared.isPrivateBrowsing
+                )
             }
+            tab.reportPageLoad(to: rewards)
             if webView.url?.isLocal == false {
                 // Reset should classify
                 tab.shouldClassifyLoadsForAds = true
+                // Set rewards inter site url as new page load url.
+                rewardsXHRLoadURL = webView.url
             }
             
             if tab === tabManager.selectedTab {

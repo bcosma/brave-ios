@@ -4,6 +4,7 @@
 
 import Foundation
 import BraveShared
+import BraveRewardsUI
 
 extension Theme {
     func applyAppearanceProperties() {
@@ -15,6 +16,7 @@ extension Theme {
         
         UIToolbar.appearance().tintColor = colors.accent
         UIToolbar.appearance().backgroundColor = colors.footer
+        UIToolbar.appearance().barTintColor = colors.footer
         
         UINavigationBar.appearance().tintColor = colors.accent
         UINavigationBar.appearance().appearanceBarTintColor = colors.header
@@ -51,6 +53,8 @@ extension Theme {
         // Sync items
         SyncViewController.SyncView.appearance(whenContainedInInstancesOf: [UINavigationController.self]).appearanceBackgroundColor = colors.home
         SyncDeviceTypeButton.appearance().appearanceBackgroundColor = colors.header
+        UIButton.appearance(
+            whenContainedInInstancesOf: [SyncViewController.self]).appearanceTextColor = colors.tints.home
         
         // Search
         UIView.appearance(whenContainedInInstancesOf: [SearchViewController.self]).appearanceBackgroundColor = colors.home
@@ -76,66 +80,23 @@ extension Theme {
             
             // EmptyPrivateTabsView
             UILabel.appearance(whenContainedInInstancesOf: [EmptyPrivateTabsView.self]).appearanceTextColor = UIColor.Photon.Grey10
+            
+            // See #1548.
+            // Using tint color of iOS 13 UISwitch to match better with our light theme
+            UISwitch.appearance().tintColor = #colorLiteral(red: 0.8392156863, green: 0.8392156863, blue: 0.8431372549, alpha: 1)
         }
-    }
-}
-
-extension UILabel {
-    @objc dynamic var appearanceTextColor: UIColor! {
-        get { return self.textColor }
-        set { self.textColor = newValue }
-    }
-}
-
-extension InsetButton {
-    @objc dynamic var appearanceTextColor: UIColor! {
-        get { return self.titleColor(for: .normal) }
-        set { self.setTitleColor(newValue, for: .normal) }
-    }
-}
-
-extension UITableView {
-    @objc dynamic var appearanceSeparatorColor: UIColor? {
-        get { return self.separatorColor }
-        set { self.separatorColor = newValue }
-    }
-}
-
-extension UIView {
-    @objc dynamic var appearanceBackgroundColor: UIColor? {
-        get { return self.backgroundColor }
-        set { self.backgroundColor = newValue }
-    }
-}
-
-extension UITextField {
-    @objc dynamic var appearanceTextColor: UIColor? {
-        get { return self.textColor }
-        set { self.textColor = newValue }
-    }
-}
-
-extension UIView {
-    @objc dynamic var appearanceOverrideUserInterfaceStyle: UIUserInterfaceStyle {
-        get {
-            if #available(iOS 13.0, *) {
-                return self.overrideUserInterfaceStyle
-            }
-            return .unspecified
+        
+        // Brave Rewards
+        
+        // on iOS 12 global UILabel appearance takes over `barTint` and other properties for some reason.
+        // Adding a more specific proxy resolves it.
+        if #available(iOS 13, *) { } else {
+            UILabel.appearance(whenContainedInInstancesOf: [UINavigationBar.self, RewardsPanelController.self]).appearanceTextColor = .black
         }
-        set {
-            if #available(iOS 13.0, *) {
-                self.overrideUserInterfaceStyle = newValue
-            }
-            // Ignore
-        }
+        
+        // This solves bunch of small theming problems like disclosure indicators color, cell highlight color..
+        UIView.appearance(whenContainedInInstancesOf: [RewardsPanelController.self]).appearanceOverrideUserInterfaceStyle = .light
+        
+        (UIApplication.shared.delegate as? AppDelegate)?.window?.backgroundColor = colors.home
     }
 }
-
-extension UINavigationBar {
-    @objc dynamic var appearanceBarTintColor: UIColor? {
-        get { return self.barTintColor }
-        set { self.barTintColor = newValue }
-    }
-}
-

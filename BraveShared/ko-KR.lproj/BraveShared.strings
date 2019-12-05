@@ -68,9 +68,6 @@
 "AuthenticationLoginsTouchReason" = "지금 로그인에 액세스하려면 지문을 사용하십시오.";
 
 /* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
-"AuthenticationMaximumAttemptsReached" = "최대 시도 횟수에 도달했습니다. 1시간 후에 다시 시도하십시오.";
-
-/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
 "AuthenticationMaximumAttemptsReachedNoTime" = "최대 시도 횟수에 도달했습니다. 나중에 다시 시도하십시오.";
 
 /* Label for the Passcode item in Settings */
@@ -184,6 +181,9 @@
 /* Button to show the brave panel */
 "BravePanel" = "Brave 패널";
 
+/* Brave Rewards settings title */
+"BraveRewardsTitle" = "Brave Rewards";
+
 /* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
 "BraveShieldDefaults" = "Brave Shield 기본값";
 
@@ -277,6 +277,9 @@
 /* Copy codewords title */
 "CopyToClipboard" = "클립보드에 복사";
 
+/* Copy rewards internals info for support */
+"CopyWalletSupportInfo" = "후원 정보 복사";
+
 /* Currently usedd search engines section name. */
 "CurrentlyUsedSearchEngines" = "현재 사용 중인 검색 엔진";
 
@@ -321,6 +324,9 @@
 
 /* Current device model and iOS version copied to clipboard. */
 "DeviceTemplate" = "기기 %1$@(%2$@)";
+
+/* Section name for display preferences. */
+"DisplaySettingsSection" = "표시";
 
 /* No comment provided by engineer. */
 "Done" = "완료";
@@ -433,6 +439,15 @@
 /* Grand camera access */
 "GrantCameraAccess" = "카메라 활성화";
 
+/* Context menu item for hiding link previews */
+"HideLinkPreviewsActionTitle" = "링크 미리보기 숨기기";
+
+/* Hides the rewards icon */
+"HideRewardsIcon" = "Brave Rewards 아이콘 숨기기";
+
+/* Hide the rewards icon explination. */
+"HideRewardsIconSubtitle" = "Brave Rewards가 활성화되지 않았을 때 Brave Rewards 아이콘 숨김";
+
 /* Title for history menu item */
 "HistortMenuItem" = "방문기록";
 
@@ -486,6 +501,9 @@
 
 /* Label for the button used to select all logins. */
 "LoginListSelectAllButtonTitle" = "모두 선택";
+
+/* Setting to allow media to play automatically */
+"MediaAutoPlays" = "백그라운드 동영상 자동재생 활성화";
 
 /* Copy password text selection menu item */
 "MenuItemCopyTitle" = "복사";
@@ -585,6 +603,9 @@
 
 /* Setting to keep app in private mode */
 "PrivateBrowsingOnly" = "비공개 브라우징으로만 열기";
+
+/* When 'Private Browsing Only' is enabled, we need to alert the user of their normal tabs being destroyed */
+"PrivateBrowsingOnlyWarning" = "비공개 브라우징으로만 열기 모드를 사용하면 현재 탭을 모두 닫고 모든 사이트에서 로그아웃됩니다.";
 
 /* Private tab details */
 "PrivateTabBody" = "비공개 탭은 Brave에 저장되지 않지만 이를 통해 온라인에서 익명으로 활동할 수 있는 것은 아닙니다. 비공개 탭에서 방문한 사이트는 방문 기록에 표시되지 않으며, 탭을 닫으면 항상 해당 쿠키가 사라집니다. 즉, Brave에는 해당 사이트에 대한 어떤 흔적도 남지 않게 됩니다. 하지만 다운로드는 저장됩니다.\n비공개 탭에서 방문했더라도 귀하의 이동통신 사업자(또는 귀하가 접속하고 있는 WiFi 네트워크나 VPN의 소유자)는 귀하가 어느 사이트를 방문했는지 볼 수 있으며, 해당 사이트에서는 귀하의 공용 IP 주소를 확인할 수 있습니다.";
@@ -763,6 +784,9 @@
 /* Error message that is shown in settings when there was a problem loading */
 "SettingsContentLoadErrorMessage" = "페이지를 로드할 수 없습니다.";
 
+/* Row name for licenses. */
+"SettingsLicenses" = "라이선스";
+
 /* Title for settings menu item */
 "SettingsMenuItem" = "설정";
 
@@ -814,6 +838,9 @@
 /* Setting preference to only show the browser tabs bar when the device is in the landscape orientation. */
 "ShowInLandscapeOnly" = "항상 가로 모드로 표시";
 
+/* Context menu item for showing link previews */
+"ShowLinkPreviewsActionTitle" = "링크 미리보기 표시";
+
 /* Accessibility Label for the tabs button in the browser toolbar */
 "ShowTabs" = "탭 표시";
 
@@ -845,7 +872,7 @@
 "SyncAddComputerTitle" = "컴퓨터 추가";
 
 /* Add mobile device to sync with scan */
-"SyncAddDeviceScan" = "체인 QR 코드 스캔";
+"SyncAddDeviceScan" = "체인 QR 코드 동기화";
 
 /* Sync add device description */
 "SyncAddDeviceScanDescription" = "두 번째 기기에서 설정 패널에 있는 동기화로 이동한 다음 \"동기화 코드 스캔\" 버튼을 탭합니다. 카메라를 사용하여 아래 QR 코드를 스캔합니다.\n 이 코드는 일종의 비밀번호로 취급하십시오. 이 코드를 확보한 사람은 귀하의 동기화 데이터를 읽고 변조할 수 있습니다.";
@@ -1031,7 +1058,7 @@
 "ThemesDarkOption" = "어두움";
 
 /* Setting to choose the user interface theme for normal browsing mode, contains choices like 'light' or 'dark' themes */
-"ThemesDisplayBrightness" = "디스플레이 및 밝기";
+"ThemesDisplayBrightness" = "비주얼";
 
 /* Text specifying that the above setting does not impact the user interface while they user is in private browsing mode. */
 "ThemesDisplayBrightnessFooter" = "이 설정은 비공개 브라우징 모드에는 적용되지 않습니다.";
@@ -1062,6 +1089,9 @@
 
 /* Version number of Brave shown in settings */
 "VersionTemplate" = "버전 %1$@(%2$@)";
+
+/* The date your wallet was created */
+"WalletCreationDate" = "월렛 생성 날짜";
 
 /* Accessibility label for the main web content view */
 "WebContentAccessibilityLabel" = "웹 콘텐츠";

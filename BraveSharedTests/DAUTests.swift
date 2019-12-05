@@ -20,13 +20,16 @@ class DAUTests: XCTestCase {
     private let dau = DAU(date: Date(timeIntervalSince1970: 1183809600))
     
     func testChannelParam() {
-        let releaseExpected = URLQueryItem(name: "channel", value: "stable")
+        let releaseExpected = URLQueryItem(name: "channel", value: "release")
         XCTAssertEqual(dau.channelParam(for: .release), releaseExpected)
         
-        let betaExpected = URLQueryItem(name: "channel", value: "beta")
-        XCTAssertEqual(dau.channelParam(for: .beta), betaExpected)
+        let externalBetaExpected = URLQueryItem(name: "channel", value: "beta")
+        XCTAssertEqual(dau.channelParam(for: .beta), externalBetaExpected)
         
-        let devExpected = URLQueryItem(name: "channel", value: "beta")
+        let internalBetaExpected = URLQueryItem(name: "channel", value: "developer")
+        XCTAssertEqual(dau.channelParam(for: .enterprise), internalBetaExpected)
+        
+        let devExpected = URLQueryItem(name: "channel", value: "invalid")
         XCTAssertEqual(dau.channelParam(for: .developer), devExpected)
     }
     
@@ -135,6 +138,16 @@ class DAUTests: XCTestCase {
         let params2 = dauSecondLaunch.paramsAndPrefsSetup()
         
         XCTAssertNil(params2)
+    }
+    
+    func testMondayOfCurrentWeekFormatted() {
+        // Making sure gregorian year is showing
+        let yearString = Date().mondayOfCurrentWeekFormatted?.truncate(length: 4, trailing: "")
+        let year = Int(yearString!)!
+        
+        // There is no easy way to mock a different calendar in unit tests, just checking if
+        // year we get looks 'correct' should be good enough.
+        XCTAssert(year > 2018 && year < 2025)
     }
     
     func testNonDefaultWoiExplicitDate() {
