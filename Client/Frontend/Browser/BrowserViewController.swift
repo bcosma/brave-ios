@@ -57,6 +57,9 @@ class BrowserViewController: UIViewController {
     fileprivate let alertStackView = UIStackView() // All content that appears above the footer should be added to this view. (Find In Page/SnackBars)
     fileprivate var findInPageBar: FindInPageBar?
     
+    // Single data source used for all favorites vcs
+    fileprivate let backgroundDataSource = NTPBackgroundDataSource()
+    
     var loadQueue = Deferred<Void>()
 
     lazy var mailtoLinkHandler: MailtoLinkHandler = MailtoLinkHandler()
@@ -238,6 +241,8 @@ class BrowserViewController: UIViewController {
             }
         }
         
+        Preferences.NewTabPage.attemptToShowClaimRewardsNotification.value = true
+        
         notificationsHandler = AdsNotificationHandler(ads: rewards.ads, presentingController: self)
         notificationsHandler?.canShowNotifications = { [weak self] in
             guard let self = self else { return false }
@@ -261,6 +266,10 @@ class BrowserViewController: UIViewController {
             guard let self = self, let client = self.deviceCheckClient else { return }
             if result == .walletCreated {
                 self.rewards.ledger.setupDeviceCheckEnrollment(client) { }
+                
+                if self.notificationsHandler?.shouldShowNotifications() == true {
+                    self.displayMyFirstAdIfAvailable()
+                }
             }
         }
         rewardsObserver.fetchedPanelPublisher = { [weak self] publisher, tabId in
@@ -275,6 +284,9 @@ class BrowserViewController: UIViewController {
         rewardsObserver.notificationsRemoved = { [weak self] _ in
             guard let self = self, self.isViewLoaded else { return }
             self.updateRewardsButtonState()
+        }
+        rewardsObserver.rewardsEnabledStateUpdated = { [weak self] _ in
+            self?.updateRewardsButtonState()
         }
     }
     
@@ -334,6 +346,7 @@ class BrowserViewController: UIViewController {
 
         if showToolbar {
             toolbar = BottomToolbarView()
+            toolbar?.setSearchButtonState(url: tabManager.selectedTab?.url)
             footer.addSubview(toolbar!)
             toolbar?.tabToolbarDelegate = self
 
@@ -445,9 +458,19 @@ class BrowserViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActiveNotification), name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidBecomeActiveNotification), name: UIApplication.didBecomeActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(appDidEnterBackgroundNotification), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.do {
+            $0.addObserver(self, selector: #selector(appWillResignActiveNotification),
+                           name: UIApplication.willResignActiveNotification, object: nil)
+            $0.addObserver(self, selector: #selector(appDidBecomeActiveNotification),
+                           name: UIApplication.didBecomeActiveNotification, object: nil)
+            $0.addObserver(self, selector: #selector(appDidEnterBackgroundNotification),
+                           name: UIApplication.didEnterBackgroundNotification, object: nil)
+            $0.addObserver(self, selector: #selector(resetNTPNotification),
+                           name: .adsOrRewardsToggledInSettings, object: nil)
+            
+        }
+        
+        
         KeyboardHelper.defaultHelper.addDelegate(self)
 
         webViewContainerBackdrop = UIView()
@@ -547,6 +570,10 @@ class BrowserViewController: UIViewController {
                 SKStoreReviewController.requestReview()
             }
         }
+        
+        Bookmark.restore_1_12_Bookmarks() {
+            log.info("Bookmarks from old database were successfully restored")
+        }
     }
     
     /// Initialize Sync without connecting. Sync webview needs to be in a "permanent" location
@@ -570,8 +597,10 @@ class BrowserViewController: UIViewController {
         present(alert, animated: true, completion: nil)
         #endif
         
-        sync.webView.alpha = 0.01
-        UIApplication.shared.keyWindow?.insertSubview(Sync.shared.webView, at: 0)
+        DispatchQueue.main.async {
+            sync.webView.alpha = CGFloat.leastNormalMagnitude
+            UIApplication.shared.keyWindow?.insertSubview(Sync.shared.webView, at: 0)
+        }
     }
     
     fileprivate func setupTabs() {
@@ -931,7 +960,10 @@ class BrowserViewController: UIViewController {
         homePanelIsInline = inline
 
         if favoritesViewController == nil {
-            let homePanelController = FavoritesViewController(profile: profile)
+            let homePanelController = FavoritesViewController(profile: profile,
+                                                              fromOverlay: !inline,
+                                                              rewards: rewards,
+                                                              backgroundDataSource: backgroundDataSource)
             homePanelController.delegate = self
             homePanelController.view.alpha = 0
             homePanelController.applyTheme(Theme.of(tabManager.selectedTab))
@@ -959,7 +991,7 @@ class BrowserViewController: UIViewController {
         })
         view.setNeedsUpdateConstraints()
     }
-
+    
     fileprivate func hideHomePanelController() {
         if let controller = favoritesViewController {
             self.favoritesViewController = nil
@@ -1081,13 +1113,19 @@ class BrowserViewController: UIViewController {
                 return
             }
             
-            if let webView = tab.webView, let code = url.bookmarkletCodeComponent {
-                resetSpoofedUserAgentIfRequired(webView, newURL: url)
-                webView.evaluateJavaScript(code, completionHandler: { _, error in
-                    if let error = error {
-                        log.error(error)
-                    }
-                })
+            //Another Fix for: https://github.com/brave/brave-ios/pull/2296
+            //Disable any sort of privileged execution contexts
+            //IE: The user must explicitly type OR must explicitly tap a bookmark they have saved.
+            //Block all other contexts such as redirects, downloads, embed, linked, etc..
+            if visitType == .typed || visitType == .bookmark {
+                if let webView = tab.webView, let code = url.bookmarkletCodeComponent {
+                    resetSpoofedUserAgentIfRequired(webView, newURL: url)
+                    webView.evaluateJavaScript(code, completionHandler: { _, error in
+                        if let error = error {
+                            log.error(error)
+                        }
+                    })
+                }
             }
         } else {
             topToolbar.currentURL = url
@@ -1178,6 +1216,9 @@ class BrowserViewController: UIViewController {
                 if tab === tabManager.selectedTab && !tab.restoring {
                     updateUIForReaderHomeStateForTab(tab)
                 }
+                // Catch history pushState navigation, but ONLY for same origin navigation,
+                // for reasons above about URL spoofing risk.
+                navigateInTab(tab: tab)
             }
         case .title:
             // Ensure that the tab title *actually* changed to prevent repeated calls
@@ -1326,23 +1367,20 @@ class BrowserViewController: UIViewController {
 
         switchToPrivacyMode(isPrivate: isPrivate)
         _ = tabManager.addTabAndSelect(request, isPrivate: isPrivate)
-        if url == nil && NewTabAccessors.getNewTabPage() == .blankPage {
-            topToolbar.tabLocationViewDidTapLocation(topToolbar.locationView)
-        }
     }
 
-    func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false, searchFor searchText: String? = nil) {
+    func openBlankNewTab(attemptLocationFieldFocus: Bool, isPrivate: Bool = false, searchFor searchText: String? = nil) {
         popToBVC()
         openURLInNewTab(nil, isPrivate: isPrivate, isPrivileged: true)
         let freshTab = tabManager.selectedTab
         
-        if focusLocationField {
+        // Focus field only if requested and background images are not supported
+        if attemptLocationFieldFocus && Preferences.NewTabPage.autoOpenKeyboard.value {
             DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(300)) {
                 // Without a delay, the text field fails to become first responder
                 // Check that the newly created tab is still selected.
                 // This let's the user spam the Cmd+T button without lots of responder changes.
                 guard freshTab == self.tabManager.selectedTab else { return }
-                self.topToolbar.tabLocationViewDidTapLocation(self.topToolbar.locationView)
                 if let text = searchText {
                     self.topToolbar.setLocation(text, search: true)
                 }
@@ -1473,6 +1511,9 @@ class BrowserViewController: UIViewController {
         }
 
         if let url = webView.url {
+            // Whether to show search icon or + icon
+            toolbar?.setSearchButtonState(url: url)
+            
             if !url.isErrorPageURL, !url.isAboutHomeURL, !url.isFileURL {
                 // Fire the readability check. This is here and not in the pageShow event handler in ReaderMode.js anymore
                 // because that event wil not always fire due to unreliable page caching. This will either let us know that
@@ -1519,6 +1560,11 @@ class BrowserViewController: UIViewController {
                 tab.desktopSite = Preferences.General.alwaysRequestDesktopSite.value
             }
         }
+    }
+    
+    private func focusLocationField() {
+        if browserLockPopup != nil || duckDuckGoPopup != nil { return }
+        topToolbar.tabLocationViewDidTapLocation(topToolbar.locationView)
     }
     
     // MARK: - Browser PIN Callout
@@ -1617,12 +1663,12 @@ extension BrowserViewController: ClipboardBarDisplayHandlerDelegate {
 
 extension BrowserViewController: QRCodeViewControllerDelegate {
     func didScanQRCodeWithURL(_ url: URL) {
-        openBlankNewTab(focusLocationField: false)
+        openBlankNewTab(attemptLocationFieldFocus: false)
         finishEditingAndSubmit(url, visitType: VisitType.typed)
     }
 
     func didScanQRCodeWithText(_ text: String) {
-        openBlankNewTab(focusLocationField: false)
+        openBlankNewTab(attemptLocationFieldFocus: false)
         submitSearchText(text)
     }
 }
@@ -1864,8 +1910,11 @@ extension BrowserViewController: TopToolbarDelegate {
     
     // TODO: This logic should be fully abstracted away and share logic from current MenuViewController
     // See: https://github.com/brave/brave-ios/issues/1452
-    func topToolbarDidTapBookmarkButton(_ topToolbar: TopToolbarView) {
-        let vc = BookmarksViewController(folder: nil, isPrivateBrowsing: PrivateBrowsingManager.shared.isPrivateBrowsing)
+    func topToolbarDidTapBookmarkButton(_ topToolbar: TopToolbarView?, favorites: Bool) {
+        let mode: BookmarksViewController.Mode = favorites ? .favorites : .bookmarks(inFolder: nil)
+        
+        let vc = BookmarksViewController(mode: mode,
+                                         isPrivateBrowsing: PrivateBrowsingManager.shared.isPrivateBrowsing)
         vc.toolbarUrlActionsDelegate = self
         
         let nav = SettingsNavigationController(rootViewController: vc)
@@ -1887,6 +1936,10 @@ extension BrowserViewController: TopToolbarDelegate {
 }
 
 extension BrowserViewController: ToolbarDelegate {
+    func tabToolbarDidPressSearch(_ tabToolbar: ToolbarProtocol, button: UIButton) {
+        topToolbar.tabLocationViewDidTapLocation(topToolbar.locationView)
+    }
+    
     func tabToolbarDidPressBack(_ tabToolbar: ToolbarProtocol, button: UIButton) {
         tabManager.selectedTab?.goBack()
     }
@@ -1938,7 +1991,7 @@ extension BrowserViewController: ToolbarDelegate {
     }
     
     func tabToolbarDidPressAddTab(_ tabToolbar: ToolbarProtocol, button: UIButton) {
-        self.openBlankNewTab(focusLocationField: true, isPrivate: PrivateBrowsingManager.shared.isPrivateBrowsing)
+        self.openBlankNewTab(attemptLocationFieldFocus: true, isPrivate: PrivateBrowsingManager.shared.isPrivateBrowsing)
     }
 
     func tabToolbarDidLongPressAddTab(_ tabToolbar: ToolbarProtocol, button: UIButton) {
@@ -1951,13 +2004,13 @@ extension BrowserViewController: ToolbarDelegate {
             let newPrivateTabAction = UIAlertAction(title: Strings.NewPrivateTabTitle, style: .default, handler: { [unowned self] _ in
                 // BRAVE TODO: Add check for DuckDuckGo popup (and based on 1.6, whether the browser lock is enabled?)
                 // before focusing on the url bar
-                self.openBlankNewTab(focusLocationField: true, isPrivate: true)
+                self.openBlankNewTab(attemptLocationFieldFocus: true, isPrivate: true)
             })
             actions.append(newPrivateTabAction)
         }
         let bottomActionTitle = PrivateBrowsingManager.shared.isPrivateBrowsing ? Strings.NewPrivateTabTitle : Strings.NewTabTitle
         actions.append(UIAlertAction(title: bottomActionTitle, style: .default, handler: { [unowned self] _ in
-            self.openBlankNewTab(focusLocationField: true, isPrivate: PrivateBrowsingManager.shared.isPrivateBrowsing)
+            self.openBlankNewTab(attemptLocationFieldFocus: true, isPrivate: PrivateBrowsingManager.shared.isPrivateBrowsing)
         }))
         return actions
     }
@@ -2104,10 +2157,6 @@ extension BrowserViewController: TabDelegate {
 
         tab.addContentScript(LocalRequestHelper(), name: LocalRequestHelper.name())
 
-        let historyStateHelper = HistoryStateHelper(tab: tab)
-        historyStateHelper.delegate = self
-        tab.addContentScript(historyStateHelper, name: HistoryStateHelper.name())
-
         tab.contentBlocker.setupTabTrackingProtection()
         tab.addContentScript(tab.contentBlocker, name: ContentBlockerHelper.name())
 
@@ -2220,7 +2269,8 @@ extension BrowserViewController: TabManagerDelegate {
             wv.accessibilityIdentifier = nil
             wv.removeFromSuperview()
         }
-
+        
+        toolbar?.setSearchButtonState(url: selected?.url)
         if let tab = selected, let webView = tab.webView {
             updateURLBar()
             
@@ -2290,6 +2340,20 @@ extension BrowserViewController: TabManagerDelegate {
         }
 
         updateInContentHomePanel(selected?.url as URL?)
+        
+        // Kind of a goofy work around for specific edge-case
+        // If creating a new tab from the tab tray, the focus behavior is kind of weird.
+        // Also, due to the significant time required before url focus (closing tab tray, creating tab, selecting)
+        //   the time delay here is pretty significant, hence a check inside to prevent highlighting the url bar
+        //   if the user navigated to a new tab.
+        if Preferences.NewTabPage.autoOpenKeyboard.value {
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(800)) {
+                // Only highlight location bar if still on a NTP.
+                if tabManager.selectedTab?.url?.isAboutHomeURL == true {
+                    self.focusLocationField()
+                }
+            }
+        }
     }
 
     func tabManager(_ tabManager: TabManager, willAddTab tab: Tab) {
@@ -2979,13 +3043,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
     }
 }
 
-extension BrowserViewController: HistoryStateHelperDelegate {
-    func historyStateHelper(_ historyStateHelper: HistoryStateHelper, didPushOrReplaceStateInTab tab: Tab) {
-        navigateInTab(tab: tab)
-        tabManager.saveTab(tab)
-    }
-}
-
 /**
  A third party search engine Browser extension
 **/
@@ -3306,7 +3363,7 @@ extension BrowserViewController: ToolbarUrlActionsDelegate {
     }
 }
 
-extension BrowserViewController: TopSitesDelegate {
+extension BrowserViewController: FavoritesDelegate {
     
     func didSelect(input: String) {
         processAddressBar(text: input, visitType: .bookmark)
@@ -3314,6 +3371,26 @@ extension BrowserViewController: TopSitesDelegate {
     
     func didTapDuckDuckGoCallout() {
         presentDuckDuckGoCallout(force: true)
+    }
+    
+    func didTapShowMoreFavorites() {
+        topToolbarDidTapBookmarkButton(nil, favorites: true)
+    }
+    
+    func openBrandedImageCallout(state: BrandedImageCalloutState?) {
+        guard let state = state, state.hasDetailViewController else { return }
+        
+        let vc = NTPLearnMoreViewController(state: state, rewards: rewards)
+        
+        vc.linkHandler = { [weak self] url in
+            self?.tabManager.selectedTab?.loadRequest(PrivilegedRequest(url: url) as URLRequest)
+        }
+
+        addChild(vc)
+        view.addSubview(vc.view)
+        vc.view.snp.remakeConstraints {
+            $0.right.top.bottom.leading.equalToSuperview()
+        }
     }
 }
 

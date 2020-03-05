@@ -68,7 +68,13 @@
 "AuthenticationLoginsTouchReason" = "Använd ditt fingeravtryck för att komma inloggningar nu.";
 
 /* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
+"AuthenticationMaximumAttemptsReached" = "För många misslyckade försök.\n Vänligen försök igen inom %d minuter.";
+
+/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
 "AuthenticationMaximumAttemptsReachedNoTime" = "Maximala antalet försök har nåtts. Försök igen senare.";
+
+/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
+"AuthenticationMaximumAttemptsReachedOneMinute" = "För många misslyckade försök.\n Vänligen försök igen om 1 minut.";
 
 /* Label for the Passcode item in Settings */
 "AuthenticationPasscode" = "Lösenord för inloggning";
@@ -235,6 +241,9 @@
 /* The confirmation button that clears history even when Sync is connected. */
 "ClearSyncedHistoryAlertOkButtoTitle" = "OK";
 
+/* Button title to close a menu. */
+"Close" = "Stäng";
+
 /* No comment provided by engineer. */
 "CloseAllTabsTitle" = "Stäng alla %i flikar";
 
@@ -361,6 +370,9 @@
 /* Button to edit a favorite */
 "EditFavorite" = "Ändra favorit";
 
+/* Title for editing a favorite bookmark */
+"EditFavoriteTitle" = "Ändra favorit";
+
 /* Title for editing a folder */
 "EditFolderTitle" = "Redigera mapp";
 
@@ -403,6 +415,18 @@
 /* Shields Time Saved Stat */
 "EstTimerSaved" = "Uppskattad tid\nsparad";
 
+/* %@ will launch an external application */
+"ExternalAppURLAlertMessage" = "%@ startar ett externt program";
+
+/* Allow link to switch apps? */
+"ExternalAppURLAlertTitle" = "Tillåt länk att byta appar?";
+
+/* Allow Brave to open the external app URL */
+"ExternalAppURLAllow" = "Tillåt";
+
+/* Don't allow Brave to open the external app URL */
+"ExternalAppURLDontAllow" = "Tillåt inte";
+
 /* Footer text when user selects to save to favorites when editing a bookmark */
 "FavoritesLocationFooterText" = "Favoriter finns på din hemskärm. De här bokmärkena är inte synkroniserade med andra enheter.";
 
@@ -435,6 +459,12 @@
 
 /* No comment provided by engineer. */
 "FingerprintingProtection" = "Fingeravtrycksskydd";
+
+/* No comment provided by engineer. */
+"genericErrorBody" = "Någonting gick fel. Vänligen försök igen.";
+
+/* No comment provided by engineer. */
+"genericErrorTitle" = "Fel";
 
 /* Grand camera access */
 "GrantCameraAccess" = "Aktivera kamera";
@@ -477,6 +507,9 @@
 
 /* DuckDuckGo promotion label. */
 "LearnAboutPrivateSearchrwithDuckDuckGo" = "Läs om privat sökning\nmed DuckDuckGo";
+
+/* No comment provided by engineer. */
+"learnMore" = "Lär dig mer";
 
 /* Footer label describing when the current login was last modified with the timestamp as the parameter. */
 "LoginDetailLastModifiedCellFormatTitle" = "Senast ändrad %@";
@@ -544,11 +577,71 @@
 /* New Tab title */
 "NewTab" = "Ny flik";
 
+/* A setting to enable or disable the device's keyboard from opening automatically when creating a new tab. */
+"NewTabPageSettingsAutoOpenKeyboard" = "Öppna tangentbord automatiskt";
+
+/* A setting to enable or disable background images on the main screen. */
+"NewTabPageSettingsBackgroundImages" = "Visa bakgrundsbilder";
+
+/* A setting to enable or disable sponsored images from showing on the main screen. */
+"NewTabPageSettingsSponsoredImages" = "Visa sponsrade bilder";
+
+/* Title on settings page to adjust the primary home screen functionality. */
+"NewTabPageSettingsTitle" = "Ny flikssida";
+
+/* A button title to show more bookmarks, that opens a new menu. */
+"NewTabPageShowMoreFavorites" = "Visa mer";
+
 /* Sync Alert */
 "NotEnoughWordsDescription" = "Ange alla ord och försök igen.";
 
 /* Sync Alert */
 "NotEnoughWordsTitle" = "För få ord";
+
+/* The placeholder says 'hide sponsored images'. So full sentence goes like: 'You can also choose to hide sponsored images.' */
+"ntp.chooseToHideSponsoredImages" = "Du kan även välja att %@.";
+
+/* No comment provided by engineer. */
+"ntp.claimRewards" = "Hämta min belöning";
+
+/* Placeholder example: 'You earned 42 BAT last month from viewing privacy-respecting ads.' */
+"ntp.earningsReport" = "Du tjänade %@ förra månaden från att visa annonser som respekterar sekretess.";
+
+/* No comment provided by engineer. */
+"ntp.earnTokensByViewingAds" = "Tjäna in symboler genom att visa annonser som respekterar sekretess.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidForThisImageTurnAds" = "Få betalt för att se denna bakgrundsbild. Slå på Brave Rewards för att kräva din andel.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidForThisImageTurnRewards" = "Få betalt för att se denna bakgrundsbild. Slå på Brave Rewards för att kräva din andel.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidToSeeThisImage" = "Få betalt för att se denna bakgrundsbild.";
+
+/* The context is to praise the user that they did a good job, to keep it up. It is used in full sentence like: 'Way to go! You earned 40 BAT last month.' */
+"ntp.goodJob" = "Bra jobbat!";
+
+/* This sentence is not capitalized on purpose, it is a part of a bigger sentence which goes like this: 'You can also choose to hide sponsored images.' */
+"ntp.hideSponsoredImages" = "dölj sponsrade bilder";
+
+/* The placeholder says 'Learn more'. So full sentence goes like: 'Learn more about sponsored images in Brave Rewards.' */
+"ntp.learnMoreAboutBrandedImages" = "%@ om sponsrade bilder i Brave Rewards";
+
+/* No comment provided by engineer. */
+"ntp.supportWebCreatorsWithTokens" = "Du kan stödja webbskapare med symboler.";
+
+/* No comment provided by engineer. */
+"ntp.turnOnBraveAds" = "Slå på Brave annonser";
+
+/* No comment provided by engineer. */
+"ntp.turnOnBraveRewards" = "Slå på belöningar";
+
+/* The placeholder says 'Terms of Service'. So full sentence goes like: 'By turnin Rewards, you agree to the Terms of Service'. */
+"ntp.turnRewardsTos" = "Genom att hämta belöningar samtycker du till %@.";
+
+/* No comment provided by engineer. */
+"ntp.youArePaidToSeeThisImage" = "Du får betalt för att se den här bakgrundsbilden.";
 
 /* Context menu item for opening all folder bookmarks */
 "OpenAllBookmarks" = "Öppna alla (%i)";
@@ -565,6 +658,9 @@
 /* See http://mzl.la/1G7uHo7 */
 "OpenPhoneSettingsActionTitle" = "Öppna inställningar";
 
+/* Button title to that opens a website. */
+"OpenWebsite" = "Öppne hemsida";
+
 /* Section name for other settings. */
 "OtherSettingsSection" = "Andra inställningar";
 
@@ -576,6 +672,9 @@
 
 /* Error message displayed when user tries to enter the same passcode as their existing code when changing it. */
 "PasscodeMatchOldErrorText" = "Ditt nya lösenord får inte vara samma som ditt befintliga.";
+
+/* Label that says who took a photograph that will be displayed to the user. '%@' is a placeholder and will include be a specific person's name, example 'Bill Gates'. */
+"PhotoBy" = "Foto av %@";
 
 /* Label for preview action on Tab Tray Tab to add current tab to Bookmarks */
 "PreviewActionAddToBookmarksActionTitle" = "Lägg till i bokmärken";
@@ -796,6 +895,9 @@
 /* Title for sharing url menu item */
 "ShareWithMenuItem" = "Dela med …";
 
+/* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
+"ShieldsDefaults" = "Standarder för sköldar";
+
 /* shields overview message */
 "ShieldsOverview" = "Sköldarna låter dig styra när annonser och spårare blockeras för varje webbplats du besöker. Om du föredrar att se annonser på en viss webbplats kan du aktivera dem här.";
 
@@ -875,13 +977,13 @@
 "SyncAddDeviceScan" = "Synka kedje-QR-kod";
 
 /* Sync add device description */
-"SyncAddDeviceScanDescription" = "På din andra mobila enhet navigerar du till synkronisering på panelen för inställningar och trycker på knappen \"Skanna synkroniseringskod\". Använd din kamera för att skanna QR koden nedan.\nBehandla den här koden som ett lösenord. Om någon får tag i den kan de läsa och ändra dina synkroniserade data.";
+"SyncAddDeviceScanDescription" = "På din andra mobila enhet, navigera till synkronisering i inställningspanelen och tryck på knappen \"Skanna synkroniseringskod\". Använd din kamera för att skanna QR-koden nedan.\n\n Behandla den här koden som ett lösenord. Om någon kommer över det kan de läsa och ändra dina synkroniserade data.";
 
 /* Add device to sync with code words */
 "SyncAddDeviceWords" = "Ange synkroniseringskoden";
 
 /* Sync add device description */
-"SyncAddDeviceWordsDescription" = "Navigera på din enhet till synkronisera på inställningspanelen och tryck på knappen \"%@\". Ange den synkroniserade kedjekoden som visas nedan.\nBehandla den här koden som ett lösenord. Om någon får tag i den kan de läsa och ändra dina synkroniserade data.";
+"SyncAddDeviceWordsDescription" = "Navigera via din enhet till synkronisera på inställningsmenyn och tryck på knappen \"%@\". Ange den synkroniseringskod som visas nedan.\n\n Behandla den här koden som ett lösenord. Om någon kommer över det kan de läsa och ändra dina synkroniserade data.";
 
 /* Add device to sync with code words navigation title */
 "SyncAddDeviceWordsTitle" = "Ande kodord";
@@ -1048,6 +1150,9 @@
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
 "TabTraySingleTabPositionFormatVoiceOverText" = "Flik %1$@ av %2$@";
 
+/* No comment provided by engineer. */
+"TermsOfService" = "Användarvillkor";
+
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
 "TermsOfUse" = "Villkor";
 
@@ -1089,6 +1194,9 @@
 
 /* Version number of Brave shown in settings */
 "VersionTemplate" = "Version %1$@ (%2$@)";
+
+/* Label that says where to view an item. '%@' is a placeholder and will include things like 'Instagram', 'unsplash'. The full label will look like 'View  on Instagram'. */
+"ViewOn" = "Visa på %@";
 
 /* The date your wallet was created */
 "WalletCreationDate" = "Plånboken skapades";

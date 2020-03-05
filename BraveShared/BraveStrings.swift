@@ -31,6 +31,10 @@ extension Strings {
     public static let Download = NSLocalizedString("CommonDownload", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Download", comment: "Text to choose for downloading a file (example: saving an image to phone)")
     public static let ShowLinkPreviewsActionTitle = NSLocalizedString("ShowLinkPreviewsActionTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Show Link Previews", comment: "Context menu item for showing link previews")
     public static let HideLinkPreviewsActionTitle = NSLocalizedString("HideLinkPreviewsActionTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Hide Link Previews", comment: "Context menu item for hiding link previews")
+    public static let learnMore = NSLocalizedString("learnMore", tableName: "BraveShared",
+                                             bundle: .braveShared, value: "Learn More", comment: "")
+    public static let termsOfService = NSLocalizedString("TermsOfService", tableName: "BraveShared",
+                                                  bundle: .braveShared, value: "Terms of Service", comment: "")
 }
 
 // MARK:-  UIAlertControllerExtensions.swift
@@ -54,6 +58,10 @@ extension Strings {
     public static let DeleteLoginAlertLocalMessage = NSLocalizedString("DeleteLoginAlertLocalMessage", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Logins will be permanently removed.", comment: "Prompt message warning the user that deleting non-synced logins will permanently remove them")
     public static let DeleteLoginAlertSyncedDevicesMessage = NSLocalizedString("DeleteLoginAlertSyncedDevicesMessage", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Logins will be removed from all connected devices.", comment: "Prompt message warning the user that deleted logins will remove logins from all connected devices")
     public static let DeleteLoginAlertCancelActionTitle = NSLocalizedString("DeleteLoginAlertCancelActionTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Cancel", comment: "Prompt option for cancelling out of deletion")
+    public static let genericErrorTitle = NSLocalizedString("genericErrorTitle", tableName: "BraveShared",
+                                                     bundle: .braveShared, value: "Error", comment: "")
+    public static let genericErrorBody = NSLocalizedString("genericErrorBody", tableName: "BraveShared",
+                                                    bundle: .braveShared, value: "Oops! Something went wrong. Please try again.", comment: "")
 }
 
 // MARK:-  BasePasscodeViewController.swift
@@ -453,6 +461,17 @@ extension Strings {
     public static let DeleteBookmarksFolderAlertTitle = NSLocalizedString("DeleteBookmarksFolderAlertTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Delete Folder?", comment: "Title for the alert shown when the user tries to delete a bookmarks folder")
     public static let DeleteBookmarksFolderAlertMessage = NSLocalizedString("DeleteBookmarksFolderAlertMessage", tableName: "BraveShared", bundle: Bundle.braveShared, value: "This will delete all folders and bookmarks inside. Are you sure you want to continue?", comment: "Message for the alert shown when the user tries to delete a bookmarks folder")
     public static let YesDeleteButtonTitle = NSLocalizedString("YesDeleteButtonTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Yes, Delete", comment: "Button title to confirm the deletion of a bookmarks folder")
+    
+    public static let Close = NSLocalizedString("Close", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Close", comment: "Button title to close a menu.")
+    public static let OpenWebsite = NSLocalizedString("OpenWebsite", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Open Website", comment: "Button title to that opens a website.")
+    public static let ViewOn = NSLocalizedString("ViewOn", tableName: "BraveShared", bundle: Bundle.braveShared, value: "View on %@", comment: "Label that says where to view an item. '%@' is a placeholder and will include things like 'Instagram', 'unsplash'. The full label will look like 'View  on Instagram'.")
+    public static let PhotoBy = NSLocalizedString("PhotoBy", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Photo by %@", comment: "Label that says who took a photograph that will be displayed to the user. '%@' is a placeholder and will include be a specific person's name, example 'Bill Gates'.")
+    public static let NewTabPageSettingsTitle = NSLocalizedString("NewTabPageSettingsTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "New Tab Page", comment: "Title on settings page to adjust the primary home screen functionality.")
+    public static let NewTabPageSettingsBackgroundImages = NSLocalizedString("NewTabPageSettingsBackgroundImages", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Show Background Images", comment: "A setting to enable or disable background images on the main screen.")
+    public static let NewTabPageSettingsSponsoredImages = NSLocalizedString("NewTabPageSettingsSponsoredImages", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Show Sponsored Images", comment: "A setting to enable or disable sponsored images from showing on the main screen.")
+    public static let NewTabPageSettingsAutoOpenKeyboard = NSLocalizedString("NewTabPageSettingsAutoOpenKeyboard", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Auto Open Keyboard", comment: "A setting to enable or disable the device's keyboard from opening automatically when creating a new tab.")
+    public static let NewTabPageShowMoreFavorites = NSLocalizedString("NewTabPageShowMoreFavorites", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Show More", comment: "A button title to show more bookmarks, that opens a new menu.")
+
 }
 
 extension Strings {
@@ -525,6 +544,7 @@ extension Strings {
     public static let NewBookmarkTitle = NSLocalizedString("NewBookmarkTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "New bookmark", comment: "Title for adding new bookmark")
     public static let NewFolderTitle = NSLocalizedString("NewFolderTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "New folder", comment: "Title for adding new folder")
     public static let EditBookmarkTitle = NSLocalizedString("EditBookmarkTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Edit bookmark", comment: "Title for editing a bookmark")
+    public static let EditFavoriteTitle = NSLocalizedString("EditFavoriteTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Edit favorite", comment: "Title for editing a favorite bookmark")
     public static let EditFolderTitle = NSLocalizedString("EditFolderTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Edit folder", comment: "Title for editing a folder")
     public static let HistoryScreenTitle = NSLocalizedString("HistoryScreenTitle", tableName: "BraveShared", bundle: Bundle.braveShared, value: "History", comment: "Title for history screen")
     public static let BookmarksMenuItem = NSLocalizedString("BookmarksMenuItem", tableName: "BraveShared", bundle: Bundle.braveShared, value: "Bookmarks", comment: "Title for bookmarks menu item")
@@ -591,3 +611,107 @@ extension Strings {
     public static let MonthlyAdsClaimNotificationTitle = NSLocalizedString("MonthlyAdsClaimNotificationTitle", bundle: Bundle.braveShared, value: "Claim your Brave ads rewards", comment: "The title of the notification that goes out monthly to users who can claim an ads grant")
     public static let MonthlyAdsClaimNotificationBody = NSLocalizedString("MonthlyAdsClaimNotificationBody", bundle: Bundle.braveShared, value: "Time to get rewarded for those ads you've been seeing in Brave.", comment: "The body of the notification that goes out monthly to users who can claim an ads grant")
 }
+
+// MARK: - Bookmark restoration
+extension Strings {
+    public static let RestoredBookmarksFolderName = NSLocalizedString("RestoredBookmarksFolderName", bundle: Bundle.braveShared, value: "Restored Bookmarks", comment: "Name of folder where restored bookmarks are retrieved")
+    public static let RestoredFavoritesFolderName = NSLocalizedString("RestoredFavoritesFolderName", bundle: Bundle.braveShared, value: "Restored Favorites", comment: "Name of folder where restored favorites are retrieved")
+}
+
+// MARK: - New tab page
+extension Strings {
+    public struct NTP {
+        public static let getPaidToSeeThisImage =
+            NSLocalizedString("ntp.getPaidToSeeThisImage",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Get paid to see this background image.",
+                comment: "")
+        public static let supportWebCreatorsWithTokens =
+            NSLocalizedString("ntp.supportWebCreatorsWithTokens",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "You can support web creators with tokens.",
+                comment: "")
+        public static let earnTokensByViewingAds =
+            NSLocalizedString("ntp.earnTokensByViewingAds",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Earn tokens by viewing privacy-respecting ads.",
+                comment: "")
+        public static let youArePaidToSeeThisImage =
+            NSLocalizedString("ntp.youArePaidToSeeThisImage",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "You're getting paid to see this background image.",
+                comment: "")
+        public static let turnOnBraveAds =
+            NSLocalizedString("ntp.turnOnBraveAds",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Turn on Brave Ads",
+                comment: "")
+        public static let turnOnBraveRewards =
+            NSLocalizedString("ntp.turnOnBraveRewards",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Turn on Rewards",
+                comment: "")
+        public static let getPaidForThisImageTurnRewards =
+            NSLocalizedString("ntp.getPaidForThisImageTurnRewards",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Get paid to see this background image. Turn on Brave Rewards to claim your share.",
+                comment: "")
+        public static let getPaidForThisImageTurnAds =
+            NSLocalizedString("ntp.getPaidForThisImageTurnAds",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Get paid to see this background image. Turn on Brave Ads to claim your share.",
+                comment: "")
+        public static let turnRewardsTos =
+            NSLocalizedString("ntp.turnRewardsTos",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "By turning on Rewards, you agree to the %@.",
+                comment: "The placeholder says 'Terms of Service'. So full sentence goes like: 'By turnin Rewards, you agree to the Terms of Service'.")
+        public static let chooseToHideSponsoredImages =
+            NSLocalizedString("ntp.chooseToHideSponsoredImages",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "You can also choose to %@.",
+                comment: "The placeholder says 'hide sponsored images'. So full sentence goes like: 'You can also choose to hide sponsored images.'")
+        public static let hideSponsoredImages =
+            NSLocalizedString("ntp.hideSponsoredImages",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "hide sponsored images",
+                comment: "This sentence is not capitalized on purpose, it is a part of a bigger sentence which goes like this: 'You can also choose to hide sponsored images.'")
+        public static let learnMoreAboutBrandedImages =
+            NSLocalizedString("ntp.learnMoreAboutBrandedImages",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "%@ about sponsored images in Brave Rewards",
+                comment: "The placeholder says 'Learn more'. So full sentence goes like: 'Learn more about sponsored images in Brave Rewards.'")
+        public static let goodJob =
+            NSLocalizedString("ntp.goodJob",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Way to go!",
+                comment: "The context is to praise the user that they did a good job, to keep it up. It is used in full sentence like: 'Way to go! You earned 40 BAT last month.'")
+        public static let earningsReport =
+            NSLocalizedString("ntp.earningsReport",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "You earned %@ last month from viewing privacy-respecting ads.",
+                comment: "Placeholder example: 'You earned 42 BAT last month from viewing privacy-respecting ads.'")
+        public static let claimRewards =
+            NSLocalizedString("ntp.claimRewards",
+                tableName: "BraveShared",
+                bundle: .braveShared,
+                value: "Claim my rewards",
+                comment: "")
+    }
+    
+}
+

@@ -5,12 +5,15 @@ import Storage
 import CoreData
 import Shared
 import Data
+import BraveShared
 
 private let log = Logger.browserLogger
 
 class FavoritesDataSource: NSObject, UICollectionViewDataSource {
     var frc: NSFetchedResultsController<Bookmark>?
     weak var collectionView: UICollectionView?
+    
+    var favoriteDeletedHandler: (() -> Void)?
 
     var isEditing: Bool = false {
         didSet {
@@ -37,6 +40,34 @@ class FavoritesDataSource: NSObject, UICollectionViewDataSource {
         }
     }
     
+    /// The number of times that each row contains
+    var columnsPerRow: Int {
+        guard let collection = collectionView else {
+            return 0
+        }
+        
+        /// Two considerations:
+        /// 1. icon size minimum
+        /// 2. trait collection
+        
+        let icons = (less: 4, more: 6)
+        let minIconPoints: CGFloat = 80
+        
+        // If icons fall below a certain size, then use less icons.
+        if (collection.frame.width / CGFloat(icons.more)) < minIconPoints {
+            return icons.less
+        }
+        
+        let cols = collection.traitCollection.horizontalSizeClass == .compact ? icons.less : icons.more
+        return cols
+    }
+    
+    /// If there are more favorites than are being shown
+    var hasOverflow: Bool {
+        let showAll = !Preferences.NewTabPage.backgroundImages.value
+        return !showAll && columnsPerRow < frc?.fetchedObjects?.count ?? 0
+    }
+    
     func refetch() {
         try? frc?.performFetch()
     }
@@ -48,7 +79,13 @@ class FavoritesDataSource: NSObject, UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return frc?.fetchedObjects?.count ?? 0
+        if hasOverflow {
+            return columnsPerRow
+        }
+        
+        // No overflow so just show them all (generally either not enough items to overflow one row or no background images.
+        let allItems = frc?.fetchedObjects?.count ?? 0
+        return allItems
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -89,9 +126,14 @@ extension FavoritesDataSource: NSFetchedResultsControllerDelegate {
                 collectionView?.insertItems(at: [indexPath])
             }
         case .delete:
-            if let indexPath = indexPath {
-                collectionView?.deleteItems(at: [indexPath])
-            }
+            // Not all favorites must be visible at the time, so we can't just call `deleteItems` here.
+            // Example:
+            // There's 10 favorites total, 4 are visible on iPhone.
+            // We delete second favorite(index=1), visible favorites count should still be 4.
+            // Favorites from places 3 and 4 are moved back to 2 and 3
+            // a new, previously hidden favorite item is now shown at position 4.
+            collectionView?.reloadData()
+            favoriteDeletedHandler?()
         case .update:
             if let indexPath = indexPath, let cell = collectionView?.cellForItem(at: indexPath) as? FavoriteCell {
                 configureCell(cell: cell, at: indexPath)

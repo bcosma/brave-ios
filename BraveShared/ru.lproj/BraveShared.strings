@@ -68,7 +68,13 @@
 "AuthenticationLoginsTouchReason" = "Для доступа к учетным данным требуется отпечаток пальца.";
 
 /* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
+"AuthenticationMaximumAttemptsReached" = "Слишком много неудачных попыток.\nПовторите вход через %d мин.";
+
+/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
 "AuthenticationMaximumAttemptsReachedNoTime" = "Попытки исчерпаны. Повторите вход позже.";
+
+/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
+"AuthenticationMaximumAttemptsReachedOneMinute" = "Слишком много неудачных попыток.\nПовторите вход через минуту.";
 
 /* Label for the Passcode item in Settings */
 "AuthenticationPasscode" = "Код доступа к учетным данным";
@@ -235,6 +241,9 @@
 /* The confirmation button that clears history even when Sync is connected. */
 "ClearSyncedHistoryAlertOkButtoTitle" = "ОК";
 
+/* Button title to close a menu. */
+"Close" = "Закрыть";
+
 /* No comment provided by engineer. */
 "CloseAllTabsTitle" = "Закрыть все вкладки (%i)";
 
@@ -361,6 +370,9 @@
 /* Button to edit a favorite */
 "EditFavorite" = "Изменить избранное";
 
+/* Title for editing a favorite bookmark */
+"EditFavoriteTitle" = "Изменение избранной закладки";
+
 /* Title for editing a folder */
 "EditFolderTitle" = "Изменение папки";
 
@@ -403,6 +415,18 @@
 /* Shields Time Saved Stat */
 "EstTimerSaved" = "Времени\nсэкономлено";
 
+/* %@ will launch an external application */
+"ExternalAppURLAlertMessage" = "%@ запустит внешнее приложение.";
+
+/* Allow link to switch apps? */
+"ExternalAppURLAlertTitle" = "Разрешить переключение приложений с помощью ссылки?";
+
+/* Allow Brave to open the external app URL */
+"ExternalAppURLAllow" = "Разрешить";
+
+/* Don't allow Brave to open the external app URL */
+"ExternalAppURLDontAllow" = "Не разрешать";
+
 /* Footer text when user selects to save to favorites when editing a bookmark */
 "FavoritesLocationFooterText" = "Избранные закладки сохраняются на домашней странице и не синхронизируются с остальными устройствами.";
 
@@ -435,6 +459,12 @@
 
 /* No comment provided by engineer. */
 "FingerprintingProtection" = "Защита от идентификации";
+
+/* No comment provided by engineer. */
+"genericErrorBody" = "Что-то пошло не так. Повторите попытку.";
+
+/* No comment provided by engineer. */
+"genericErrorTitle" = "Ошибка";
 
 /* Grand camera access */
 "GrantCameraAccess" = "Включить камеру";
@@ -477,6 +507,9 @@
 
 /* DuckDuckGo promotion label. */
 "LearnAboutPrivateSearchrwithDuckDuckGo" = "Подробнее о приватном\nпоиске с DuckDuckGo";
+
+/* No comment provided by engineer. */
+"learnMore" = "Подробнее";
 
 /* Footer label describing when the current login was last modified with the timestamp as the parameter. */
 "LoginDetailLastModifiedCellFormatTitle" = "Последнее изменение: %@";
@@ -544,11 +577,71 @@
 /* New Tab title */
 "NewTab" = "Новая вкладка";
 
+/* A setting to enable or disable the device's keyboard from opening automatically when creating a new tab. */
+"NewTabPageSettingsAutoOpenKeyboard" = "Автоматически открывать клавиатуру";
+
+/* A setting to enable or disable background images on the main screen. */
+"NewTabPageSettingsBackgroundImages" = "Показывать фоновые изображения";
+
+/* A setting to enable or disable sponsored images from showing on the main screen. */
+"NewTabPageSettingsSponsoredImages" = "Показывать спонсорские изображения";
+
+/* Title on settings page to adjust the primary home screen functionality. */
+"NewTabPageSettingsTitle" = "Новая вкладка";
+
+/* A button title to show more bookmarks, that opens a new menu. */
+"NewTabPageShowMoreFavorites" = "Еще закладки";
+
 /* Sync Alert */
 "NotEnoughWordsDescription" = "Введите все слова и повторите попытку.";
 
 /* Sync Alert */
 "NotEnoughWordsTitle" = "Вы ввели не все слова";
+
+/* The placeholder says 'hide sponsored images'. So full sentence goes like: 'You can also choose to hide sponsored images.' */
+"ntp.chooseToHideSponsoredImages" = "Вы также можете %@.";
+
+/* No comment provided by engineer. */
+"ntp.claimRewards" = "Получите вознаграждение";
+
+/* Placeholder example: 'You earned 42 BAT last month from viewing privacy-respecting ads.' */
+"ntp.earningsReport" = "В прошлом месяце вы заработали %@ за просмотр рекламных объявлений, не нарушающих вашу конфиденциальность.";
+
+/* No comment provided by engineer. */
+"ntp.earnTokensByViewingAds" = "Зарабатывайте токены за просмотр рекламных объявлений, не нарушающих вашу конфиденциальность.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidForThisImageTurnAds" = "Включите Brave Ads и получайте вознаграждение за просмотр фоновых изображений.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidForThisImageTurnRewards" = "Включите Brave Rewards и получайте вознаграждение за просмотр фоновых изображений.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidToSeeThisImage" = "Получайте вознаграждение за просмотр фоновых изображений.";
+
+/* The context is to praise the user that they did a good job, to keep it up. It is used in full sentence like: 'Way to go! You earned 40 BAT last month.' */
+"ntp.goodJob" = "Так держать!";
+
+/* This sentence is not capitalized on purpose, it is a part of a bigger sentence which goes like this: 'You can also choose to hide sponsored images.' */
+"ntp.hideSponsoredImages" = "скрыть спонсорские изображения";
+
+/* The placeholder says 'Learn more'. So full sentence goes like: 'Learn more about sponsored images in Brave Rewards.' */
+"ntp.learnMoreAboutBrandedImages" = "%@ о спонсорских изображениях в Brave Rewards.";
+
+/* No comment provided by engineer. */
+"ntp.supportWebCreatorsWithTokens" = "Вы можете поддержать создателей контента с помощью токенов.";
+
+/* No comment provided by engineer. */
+"ntp.turnOnBraveAds" = "Включить Brave Ads";
+
+/* No comment provided by engineer. */
+"ntp.turnOnBraveRewards" = "Включить Brave Rewards";
+
+/* The placeholder says 'Terms of Service'. So full sentence goes like: 'By turnin Rewards, you agree to the Terms of Service'. */
+"ntp.turnRewardsTos" = "Включая Brave Rewards, вы соглашаетесь со следующим документом: %@.";
+
+/* No comment provided by engineer. */
+"ntp.youArePaidToSeeThisImage" = "Вы получаете вознаграждение за просмотр фоновых изображений.";
 
 /* Context menu item for opening all folder bookmarks */
 "OpenAllBookmarks" = "Открыть все (%i)";
@@ -565,6 +658,9 @@
 /* See http://mzl.la/1G7uHo7 */
 "OpenPhoneSettingsActionTitle" = "Открыть настройки";
 
+/* Button title to that opens a website. */
+"OpenWebsite" = "Открыть сайт";
+
 /* Section name for other settings. */
 "OtherSettingsSection" = "Другие настройки";
 
@@ -576,6 +672,9 @@
 
 /* Error message displayed when user tries to enter the same passcode as their existing code when changing it. */
 "PasscodeMatchOldErrorText" = "Новый код доступа должен отличаться от прежнего.";
+
+/* Label that says who took a photograph that will be displayed to the user. '%@' is a placeholder and will include be a specific person's name, example 'Bill Gates'. */
+"PhotoBy" = "Автор фото: %@";
 
 /* Label for preview action on Tab Tray Tab to add current tab to Bookmarks */
 "PreviewActionAddToBookmarksActionTitle" = "Добавить в закладки";
@@ -796,6 +895,9 @@
 /* Title for sharing url menu item */
 "ShareWithMenuItem" = "Поделиться…";
 
+/* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
+"ShieldsDefaults" = "Настройки щитов по умолчанию";
+
 /* shields overview message */
 "ShieldsOverview" = "Щиты сайтов Shields позволяют контролировать блокировку рекламы и трекеров для каждого сайта, на который вы заходите. Если вы хотите видеть рекламу только на определенных сайтах, включите эту функцию ниже.";
 
@@ -875,13 +977,13 @@
 "SyncAddDeviceScan" = "QR-код цепочки синхронизации";
 
 /* Sync add device description */
-"SyncAddDeviceScanDescription" = "Запустите Brave на втором мобильном устройстве и откройте настройки. Перейдите в раздел «Синхронизация» и нажмите «Сканировать код синхронизации». Сканируйте QR-код ниже с помощью камеры.\nОтноситесь к этому коду как к паролю. Не сообщайте его никому, иначе другие пользователи смогут просматривать и изменять ваши синхронизированные данные.";
+"SyncAddDeviceScanDescription" = "Запустите Brave на втором мобильном устройстве и откройте настройки. Перейдите в раздел «Синхронизация» и нажмите «Сканировать код синхронизации». Сканируйте QR-код ниже с помощью камеры.\n\nОтноситесь к этому коду как к паролю. Не сообщайте его никому, иначе другие пользователи смогут просматривать и изменять ваши синхронизированные данные.";
 
 /* Add device to sync with code words */
 "SyncAddDeviceWords" = "Введите код синхронизации";
 
 /* Sync add device description */
-"SyncAddDeviceWordsDescription" = "Запустите Brave на устройстве и откройте настройки. Перейдите в раздел «Синхронизация» и нажмите кнопку «%@». Введите указанные ниже кодовые слова для создания цепочки синхронизации.\nОтноситесь к кодовым словам как к паролю. Не сообщайте их никому, иначе другие пользователи смогут просматривать и изменять ваши синхронизированные данные.";
+"SyncAddDeviceWordsDescription" = "Запустите Brave на устройстве и откройте настройки. Перейдите в раздел «Синхронизация» и нажмите кнопку «%@». Введите указанные ниже кодовые слова для создания цепочки синхронизации.\n\nОтноситесь к кодовым словам как к паролю. Не сообщайте их никому, иначе другие пользователи смогут просматривать и изменять ваши синхронизированные данные.";
 
 /* Add device to sync with code words navigation title */
 "SyncAddDeviceWordsTitle" = "Введите кодовые слова";
@@ -1048,6 +1150,9 @@
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
 "TabTraySingleTabPositionFormatVoiceOverText" = "Вкладка %1$@ из %2$@";
 
+/* No comment provided by engineer. */
+"TermsOfService" = "Условия использования";
+
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
 "TermsOfUse" = "Условия использования";
 
@@ -1089,6 +1194,9 @@
 
 /* Version number of Brave shown in settings */
 "VersionTemplate" = "Версия %1$@ (%2$@)";
+
+/* Label that says where to view an item. '%@' is a placeholder and will include things like 'Instagram', 'unsplash'. The full label will look like 'View  on Instagram'. */
+"ViewOn" = "Открыть в %@";
 
 /* The date your wallet was created */
 "WalletCreationDate" = "Дата создания кошелька";

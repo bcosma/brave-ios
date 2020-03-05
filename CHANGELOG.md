@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.14.1](https://github.com/brave/brave-ios/releases/tag/v1.14.1)
+
+ - Added images to new tab page. ([#1782](https://github.com/brave/brave-ios/issues/1782))
+ - Fixed wallet details not being displayed for empty wallets. ([#1852](https://github.com/brave/brave-ios/issues/1852))
+ - Fixed top bar visibility when settings page is opened on iPhones with iOS 13. ([#1714](https://github.com/brave/brave-ios/issues/1714))
+ - Fixed ad notification from being stacked underneath the shield and reward panels. ([#1904](https://github.com/brave/brave-ios/issues/1904))
+
+## [1.14](https://github.com/brave/brave-ios/releases/tag/v1.14)
+
+ - Added download preview option. ([#1467](https://github.com/brave/brave-ios/issues/1467))
+ - Added user confirmation when external links try to switch apps. ([#551](https://github.com/brave/brave-ios/issues/551))
+ - Added time out details for incorrect pin-code lockout. ([#443](https://github.com/brave/brave-ios/issues/443))
+ - Switching to "Private Browsing Only" closes normal tabs and delete sessions. ([#580](https://github.com/brave/brave-ios/issues/580))
+ - Fixed rewards button being displayed even when disabled in settings. ([#1954](https://github.com/brave/brave-ios/issues/1954))
+ - Fixed browser crash when attempting to clear private data on iPadOS 13.2. ([#1951](https://github.com/brave/brave-ios/issues/1951))
+ - Fixed AppStore button functionality when AppStore links are opened in the browser. ([#1941](https://github.com/brave/brave-ios/issues/1941))
+ - Fixed several keyboard shortcuts when using a Bluetooth keyboard. ([#1146](https://github.com/brave/brave-ios/issues/1146))
+ - Fixed force 3D Touch cursor movement in the URL bar when URL is highlighted. ([#1081](https://github.com/brave/brave-ios/issues/1081))
+
 ## [1.13](https://github.com/brave/brave-ios/releases/tag/v1.13)
  
  - Added Brave Rewards and Ads. ([#1920](https://github.com/brave/brave-ios/issues/1920))

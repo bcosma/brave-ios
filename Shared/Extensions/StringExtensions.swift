@@ -113,14 +113,22 @@ extension String {
         return (self.count > length) ? self.prefix(length) + trailing : self
     }
     
-    /*
-     Truncates the string to the specified length number of characters and appends an optional trailing string if longer.
-     - Parameter length: Desired maximum lengths of a string
-     - Parameter trailing: A 'String' that will be appended after the truncation.
-     
-     - Returns: 'String' object.
-     */
-    public func truncate(length: Int, trailing: String = "…") -> String {
-        return (self.count > length) ? self.prefix(length) + trailing : self
+    public var capitalizeFirstLetter: String {
+        return prefix(1).capitalized + dropFirst()
+    }
+    
+    public func attributedText(stringToChange: String, font: UIFont, color: UIColor = .black) -> NSAttributedString {
+        let attributedString =
+            NSMutableAttributedString(string: self,
+                                      attributes: [NSAttributedString.Key.font: font,
+                                                   NSAttributedString.Key.foregroundColor: color])
+        let boldFontAttribute: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: font.pointSize)]
+        let range = (self as NSString).range(of: stringToChange)
+        attributedString.addAttributes(boldFontAttribute, range: range)
+        return attributedString
+    }
+    
+    public var withNonBreakingSpace: String {
+        self.replacingOccurrences(of: " ", with: "\u{00a0}")
     }
 }

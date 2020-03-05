@@ -56,9 +56,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // Hold references to willFinishLaunching parameters for delayed app launch
         self.application = application
         self.launchOptions = launchOptions
-
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window!.backgroundColor = UIColor.Photon.White100
+        
+        SceneObserver.setupApplication(window: self.window!)
 
         AdBlockStats.shared.startLoading()
         HttpsEverywhereStats.shared.startLoading()
@@ -106,6 +107,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         let profilePrefix = profile.prefs.getBranchPrefix()
         Migration.launchMigrations(keyPrefix: profilePrefix)
         
+        // An attempt to fix #2185.
+        // There's an unknown crash related to database creation, which happens when tabs are being restored.
+        // Our DataControllers uses a mix of static and lazy properties, there is a chance that some
+        // concurrency problems are occuring.
+        // This forces the database to initialize most important lazy properties before doing any other
+        // database related code.
+        // Please note that this is called after bookmark and keychain restoration processes.
+        DataController.shared.lazyInitialization()
         setUpWebServer(profile)
         
         var imageStore: DiskImageStore?

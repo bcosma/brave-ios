@@ -68,7 +68,13 @@
 "AuthenticationLoginsTouchReason" = "Gunakan cap jari anda untuk mengakses Log Masuk sekarang.";
 
 /* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
+"AuthenticationMaximumAttemptsReached" = "Terlalu banyak percubaan yang gagal.\n Sila cuba lagi dalam masa %d minit.";
+
+/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
 "AuthenticationMaximumAttemptsReachedNoTime" = "Bilangan percubaan maksimum tercapai. Sila cuba lagi sebentar lagi.";
+
+/* Error message displayed when user enters incorrect passcode and has reached the maximum number of attempts. */
+"AuthenticationMaximumAttemptsReachedOneMinute" = "Terlalu banyak percubaan yang gagal.\nSila cuba lagi dalam masa 1 minit.";
 
 /* Label for the Passcode item in Settings */
 "AuthenticationPasscode" = "Kod Laluan Untuk Log Masuk";
@@ -235,6 +241,9 @@
 /* The confirmation button that clears history even when Sync is connected. */
 "ClearSyncedHistoryAlertOkButtoTitle" = "OK";
 
+/* Button title to close a menu. */
+"Close" = "Tutup";
+
 /* No comment provided by engineer. */
 "CloseAllTabsTitle" = "Tutup Semua %i Tab";
 
@@ -361,6 +370,9 @@
 /* Button to edit a favorite */
 "EditFavorite" = "Edit Kegemaran";
 
+/* Title for editing a favorite bookmark */
+"EditFavoriteTitle" = "Edit kegemaran";
+
 /* Title for editing a folder */
 "EditFolderTitle" = "Edit folder";
 
@@ -403,6 +415,18 @@
 /* Shields Time Saved Stat */
 "EstTimerSaved" = "Masa Jangkaan\nDisimpan";
 
+/* %@ will launch an external application */
+"ExternalAppURLAlertMessage" = "% @ akan melancarkan aplikasi luaran";
+
+/* Allow link to switch apps? */
+"ExternalAppURLAlertTitle" = "Benarkan pautan untuk menukar apl?";
+
+/* Allow Brave to open the external app URL */
+"ExternalAppURLAllow" = "Benarkan";
+
+/* Don't allow Brave to open the external app URL */
+"ExternalAppURLDontAllow" = "Tidak Benarkan";
+
 /* Footer text when user selects to save to favorites when editing a bookmark */
 "FavoritesLocationFooterText" = "Kegemaran terletak pada skrin halaman utama anda. Penanda buku ini tidak disegerakkan dengan peranti lain.";
 
@@ -435,6 +459,12 @@
 
 /* No comment provided by engineer. */
 "FingerprintingProtection" = "Perlindungan Pencapjarian";
+
+/* No comment provided by engineer. */
+"genericErrorBody" = "Oops! Ralat telah berlaku. Sila cuba lagi.";
+
+/* No comment provided by engineer. */
+"genericErrorTitle" = "Ralat";
 
 /* Grand camera access */
 "GrantCameraAccess" = "Aktifkan Kamera";
@@ -477,6 +507,9 @@
 
 /* DuckDuckGo promotion label. */
 "LearnAboutPrivateSearchrwithDuckDuckGo" = "Ketahui carian peribadi\ndengan DuckDuckGo";
+
+/* No comment provided by engineer. */
+"learnMore" = "Ketahui Lebih Lanjut";
 
 /* Footer label describing when the current login was last modified with the timestamp as the parameter. */
 "LoginDetailLastModifiedCellFormatTitle" = "Terakhir diubah suai %@";
@@ -544,11 +577,71 @@
 /* New Tab title */
 "NewTab" = "Tab Baharu";
 
+/* A setting to enable or disable the device's keyboard from opening automatically when creating a new tab. */
+"NewTabPageSettingsAutoOpenKeyboard" = "Papan Kekunci Terbuka Auto";
+
+/* A setting to enable or disable background images on the main screen. */
+"NewTabPageSettingsBackgroundImages" = "Tunjukkan Imej Latar Belakang";
+
+/* A setting to enable or disable sponsored images from showing on the main screen. */
+"NewTabPageSettingsSponsoredImages" = "Tunjukkan Imej Tajaan";
+
+/* Title on settings page to adjust the primary home screen functionality. */
+"NewTabPageSettingsTitle" = "Halaman Tab Baru";
+
+/* A button title to show more bookmarks, that opens a new menu. */
+"NewTabPageShowMoreFavorites" = "Tunjukkan Selanjutnya";
+
 /* Sync Alert */
 "NotEnoughWordsDescription" = "Sila masukkan semua perkataan dan cuba lagi.";
 
 /* Sync Alert */
 "NotEnoughWordsTitle" = "Perkataan Tidak Cukup";
+
+/* The placeholder says 'hide sponsored images'. So full sentence goes like: 'You can also choose to hide sponsored images.' */
+"ntp.chooseToHideSponsoredImages" = "Anda juga boleh memilih untuk %@.";
+
+/* No comment provided by engineer. */
+"ntp.claimRewards" = "Tuntut ganjaran saya";
+
+/* Placeholder example: 'You earned 42 BAT last month from viewing privacy-respecting ads.' */
+"ntp.earningsReport" = "Anda mendapat %@ bulan lepas daripada menonton iklan yang menghormati privasi.";
+
+/* No comment provided by engineer. */
+"ntp.earnTokensByViewingAds" = "Dapatkan token dengan menonton iklan yang menghormati privasi.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidForThisImageTurnAds" = "Dapatkan bayaran untuk melihat imej latar belakang ini. Hidupkan Iklan Brave untuk menuntut bahagian anda.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidForThisImageTurnRewards" = "Dapatkan bayaran untuk melihat imej latar belakang ini. Hidupkan Brave Rewards untuk menuntut bahagian anda.";
+
+/* No comment provided by engineer. */
+"ntp.getPaidToSeeThisImage" = "Dapatkan bayaran untuk melihat imej latar belakang ini";
+
+/* The context is to praise the user that they did a good job, to keep it up. It is used in full sentence like: 'Way to go! You earned 40 BAT last month.' */
+"ntp.goodJob" = "Begitu caranya!";
+
+/* This sentence is not capitalized on purpose, it is a part of a bigger sentence which goes like this: 'You can also choose to hide sponsored images.' */
+"ntp.hideSponsoredImages" = "sembunyikan imej tajaan";
+
+/* The placeholder says 'Learn more'. So full sentence goes like: 'Learn more about sponsored images in Brave Rewards.' */
+"ntp.learnMoreAboutBrandedImages" = "%@ tentang imej tajaan dalam Brave Rewards";
+
+/* No comment provided by engineer. */
+"ntp.supportWebCreatorsWithTokens" = "Anda boleh menyokong pencipta web dengan token.";
+
+/* No comment provided by engineer. */
+"ntp.turnOnBraveAds" = "Hidupkan Iklan Brave";
+
+/* No comment provided by engineer. */
+"ntp.turnOnBraveRewards" = "Hidupkan Ganjaran";
+
+/* The placeholder says 'Terms of Service'. So full sentence goes like: 'By turnin Rewards, you agree to the Terms of Service'. */
+"ntp.turnRewardsTos" = "Dengan menghidupkan Ganjaran, anda bersetuju dengan %@.";
+
+/* No comment provided by engineer. */
+"ntp.youArePaidToSeeThisImage" = "Anda dibayar untuk melihat imej latar belakang ini.";
 
 /* Context menu item for opening all folder bookmarks */
 "OpenAllBookmarks" = "Buka Semua (%i)";
@@ -565,6 +658,9 @@
 /* See http://mzl.la/1G7uHo7 */
 "OpenPhoneSettingsActionTitle" = "Buka Tetapan";
 
+/* Button title to that opens a website. */
+"OpenWebsite" = "Buka Laman Web";
+
 /* Section name for other settings. */
 "OtherSettingsSection" = "Tetapan Lain";
 
@@ -576,6 +672,9 @@
 
 /* Error message displayed when user tries to enter the same passcode as their existing code when changing it. */
 "PasscodeMatchOldErrorText" = "Kod laluan baru mestilah berbeza daripada kod yang sedia ada.";
+
+/* Label that says who took a photograph that will be displayed to the user. '%@' is a placeholder and will include be a specific person's name, example 'Bill Gates'. */
+"PhotoBy" = "Foto oleh %@";
 
 /* Label for preview action on Tab Tray Tab to add current tab to Bookmarks */
 "PreviewActionAddToBookmarksActionTitle" = "Tambah kepada Penanda Buku";
@@ -796,6 +895,9 @@
 /* Title for sharing url menu item */
 "ShareWithMenuItem" = "Kongsi dengan...";
 
+/* Section title for adbblock, tracking protection, HTTPS-E, and cookies */
+"ShieldsDefaults" = "Lalai Perisai";
+
 /* shields overview message */
 "ShieldsOverview" = "Perisai Tapak membenarkan anda mengawal bila iklan dan penjejak disekat untuk setiap tapak yang anda lawati. Jika anda suka melihat iklan di sesuatu tapak khusus, anda boleh mendayakannya di sini.";
 
@@ -875,13 +977,13 @@
 "SyncAddDeviceScan" = "Kod QR Rantai Segerak";
 
 /* Sync add device description */
-"SyncAddDeviceScanDescription" = "Pada peranti mudah alih kedua anda, navigasi ke Segerak dalam panel Tetapan dan ketik butang \"Imbas Kod Segerak\". Gunakan kamera anda untuk mengimbas Kod QR di bawah.\nAnggapkan kod ini sebagai kata laluan. Jika orang lain mendapat kod ini, mereka boleh membaca dan mengubah suai data anda yang disegerakkan. ";
+"SyncAddDeviceScanDescription" = "Pada peranti mudah alih kedua anda, navigasi ke Segerak dalam panel Tetapan dan ketik butang \"Imbas Kod Segerak\". Gunakan kamera anda untuk mengimbas Kod QR di bawah.\n\nAnggapkan kod ini sebagai kata laluan. Jika orang lain mendapat kod ini, mereka boleh membaca dan mengubah suai data anda yang disegerakkan. ";
 
 /* Add device to sync with code words */
 "SyncAddDeviceWords" = "Masukkan kod segerak";
 
 /* Sync add device description */
-"SyncAddDeviceWordsDescription" = "Pada peranti anda, navigasi kepada Segerak dalam panel Tetapan dan ketik butang \"%@\". Masukkan perkataan kod rantaian penyegerakan yang ditunjukkan di bawah.\n Anggapkan kod ini sebagai kata laluan. Jika orang lain mendapat kod ini, mereka boleh membaca dan mengubah suai data anda yang disegerakkan.";
+"SyncAddDeviceWordsDescription" = "Pada peranti anda, navigasi kepada Segerak dalam panel Tetapan dan ketik butang \"%@\". Masukkan perkataan kod rantaian penyegerakan yang ditunjukkan di bawah.\n\n Anggapkan kod ini sebagai kata laluan. Jika orang lain mendapat kod ini, mereka boleh membaca dan mengubah suai data anda yang disegerakkan.";
 
 /* Add device to sync with code words navigation title */
 "SyncAddDeviceWordsTitle" = "Masukkan Perkataan Kod";
@@ -1048,6 +1150,9 @@
 /* Message spoken by VoiceOver saying the position of the single currently visible tab in Tabs Tray, along with the total number of tabs. E.g. \"Tab 2 of 5\" says that tab 2 is visible (and is the only visible tab), out of 5 tabs total. */
 "TabTraySingleTabPositionFormatVoiceOverText" = "Tab %1$@ daripada %2$@";
 
+/* No comment provided by engineer. */
+"TermsOfService" = "Terma Perkhidmatan";
+
 /* Show Brave Browser TOS page from the Privacy section in the settings. */
 "TermsOfUse" = "Terma Penggunaan";
 
@@ -1089,6 +1194,9 @@
 
 /* Version number of Brave shown in settings */
 "VersionTemplate" = "Versi %1$@ (%2$@)";
+
+/* Label that says where to view an item. '%@' is a placeholder and will include things like 'Instagram', 'unsplash'. The full label will look like 'View  on Instagram'. */
+"ViewOn" = "Lihat di %@";
 
 /* The date your wallet was created */
 "WalletCreationDate" = "Tarikh Penciptaan Dompet";
